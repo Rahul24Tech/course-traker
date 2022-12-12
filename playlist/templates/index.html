@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body %}
+    <center><h1>List of Playlist</h1></center>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">S.no</th>
+            <th scope="col">Title</th>
+            <th scope="col">Link</th>
+            {% comment %} <th scope="col">Tag</th> {% endcomment %}
+          </tr>
+        </thead>
+        <tbody>
+            {% for a in course %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{a.title}}</td>
+                <td><a href={{a.link}}>{{a.link}}</a></td>
+                {% comment %} <td>{{a.tag}}</></td> {% endcomment %}
+                {% comment %} <td>{{a.course_id}}</td> {% endcomment %}
+            </tr>
+            {% endfor %}
+         
+        </tbody>
+      </table>
+      {% endblock %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
