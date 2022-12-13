@@ -1,0 +1,32 @@
+{% extends 'base.html' %} 
+{% block title %} Home{% endblock title %} 
+{% block homeactive %} active {% endblock homeactive %} {% block body %}
+
+<div class="container">
+  <div class="jumbotron my-3">
+    <h1 class="display-4">Welcome to TechHub!</h1>
+    <p class="lead">
+        This Platform provide you all new and trending technologies to learn and explore.
+    </p>
+    <hr class="my-4" />
+    <p>
+      It uses utility classes for typography and spacing to space content out
+      within the larger container.
+    </p>
+    {% if user.is_authenticated %}
+    <a class="btn btn-primary btn-lg" href="course" role="button"
+    >Go to Course</a
+    >
+    {% else %}
+    <a class="btn btn-primary btn-lg" role="button"
+    >Go to Course</a
+    >
+    {% comment %} <div class="alert alert-danger" role="alert">
+  You are not logged in !
+</div> {% endcomment %}
+
+    {% endif %}
+</div>
+</div>
+
+{% endblock %}

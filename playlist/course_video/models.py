@@ -12,11 +12,25 @@ class Course(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null='true')
     title = models.CharField(max_length=100)
     link = models.URLField(max_length=200, blank='true')
+    tags = TaggableManager()
+    # timeStamp=models.DateTimeField(blank=True)
     # tags = TaggableManager()
 
     def __str__(self):
         return self.title
 
+
 class Status(models.Model):
     status = models.CharField(max_length=50)
     
+    
+class Contact(models.Model):
+     sno= models.AutoField(primary_key=True)
+     name= models.CharField(max_length=255)
+     phone= models.CharField(max_length=13)
+     email= models.CharField(max_length=100)
+     content= models.TextField()
+     timeStamp=models.DateTimeField(auto_now_add=True, blank=True)
+
+     def __str__(self):
+          return "Message from " + self.name + ' - ' + self.email    

@@ -1,29 +1,29 @@
 {% extends 'base.html' %}
+{% block title %}Course{% endblock title %}
 {% block body %}
-    <center><h1>List of Playlist</h1></center>
+    <center class="my-2"><h1>List of Playlist</h1></center>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">S.no</th>
             <th scope="col">Title</th>
-            <th scope="col">Link</th>
-            {% comment %} <th scope="col">Tag</th> {% endcomment %}
+            <th scope="col">Tag</th>
           </tr>
         </thead>
         <tbody>
             {% for a in course %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td>{{a.title}}</td>
-                <td><a href={{a.link}}>{{a.link}}</a></td>
-                {% comment %} <td>{{a.tag}}</></td> {% endcomment %}
-                {% comment %} <td>{{a.course_id}}</td> {% endcomment %}
+                <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a><a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a></td>
+                
+                {% for tag in a.tags.all %}
+            
+                <td>{{tag.name}}</td>
+        {% endfor %}
             </tr>
             {% endfor %}
          
         </tbody>
       </table>
-      {% endblock %}
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      {% endblock body %}
     
