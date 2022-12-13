@@ -12,6 +12,7 @@ Installation:
  
  
 Run Test:
+ 
  1.python3 manage.py runserver:- this will run at port:8000
  
  
