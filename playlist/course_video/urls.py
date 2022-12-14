@@ -12,5 +12,7 @@ urlpatterns = [
     path('contact', contact, name="contact"),
     path("listing", listing, name="listing"),
     path("listing/<int:id>/", listing, name="listing"),
+    path("editing/<int:id>/", editing, name="editing"),
+    path("tag_listing/<slug:tags>/", tag_listing, name="tag_listing"),
     path('search', search, name="search"),
 ]

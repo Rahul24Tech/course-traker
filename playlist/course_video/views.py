@@ -1,7 +1,9 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_list_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Count
+from taggit.models import Tag
 from .models import *
 
 import youtube_dl
@@ -50,6 +52,7 @@ def main(request):
     course = Course.objects.all()
     result = {
         "course": course,
+        
     }
     print(result)
     return render(request, "index.html", result)
@@ -58,10 +61,21 @@ def main(request):
 def listing(request):
     course = Course.objects.all()
     info = {
-        "course": course
+        "course": course,
     }
 
     return render(request, "index.html", info)
+
+
+def tag_listing(request, tags):
+    course = Course.objects.all()
+    tags = Tag.objects.filter(slug=tags).values_list('name', flat=True)
+    posts = course.filter(tags__name__in=tags)
+    info = {
+        "tags": posts,
+    }
+
+    return render(request, "tag.html", info)
 
 
 def listing(request, id):
@@ -97,6 +111,7 @@ def listing(request, id):
 def techHubHome(request):
     if request.method == 'POST':
         link = request.POST['link']
+        tag = request.POST['tag']
 
         ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
 
@@ -114,8 +129,12 @@ def techHubHome(request):
             playlist_info.append(video_url.copy())
 
         print(playlist_info)
+        import pdb
+        pdb.set_trace()
+        course = Course.objects.all()
         course_result = Course(title=result.get('title'), link=link)
         course_result.save()
+        course_result.tags.add(tag)
 
         return render(request, "index.html")
 
@@ -203,3 +222,14 @@ def search(request):
     allCourse= Course.objects.filter(title__icontains=query)
     params={'allCourse': allCourse}
     return render(request, 'search.html', params)
+
+def editing(request, id):
+    course = Course.objects.get(id=id)
+    if request.method == "POST":
+        title = request.POST['title']
+        course.title = title
+        course.save(update_fields=["title"])
+        messages.success(request, "Successfully updated title")
+        return redirect('/course')
+        
+    return render(request, "edit.html", {"course": course, "id":id})

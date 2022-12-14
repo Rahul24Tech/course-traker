@@ -50,13 +50,10 @@
             <button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
             
           </form>
-{% if user.is_superuser %}
+{% comment %} {% if user.is_superuser %} {% endcomment %}
 <!-- Button to  trigger SignUp modal -->
-<a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a>
-<button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
-  Add Course
-</button>
-<ul class="navbar-nav">
+
+{% comment %} <ul class="navbar-nav">
 
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -66,13 +63,16 @@
       <a class="dropdown-item" href="logout">Logout</a>
     </div>
   </li>
-  </ul>
+  </ul> {% endcomment %}
   
 <!-- Button to  trigger Login modal -->
-{% elif user.is_authenticated %}
+{% if user.is_authenticated %}
 
 <ul class="navbar-nav">
-
+  <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a>
+  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
+    Add Course
+  </button>
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
    Welcome {{request.user}}
@@ -127,6 +127,13 @@
     <div class="form-group">
       <label for="link">Video Link</label>
       <input type="text" class="form-control" id="link" name="link" required>
+      <label for="tag">Tag</label>
+      <input type="text" class="form-control" id="tag" name="tag" required>
+      <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">IsPublic</label>
+  </div>
+
     </div>
     
           <button type="submit" class="btn btn-primary">Submit</button>

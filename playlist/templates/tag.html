@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Similar Course {% endblock title %}
+{% block blogactive %} active {% endblock blogactive %} 
+
+
+{% block body %}
+<div class="container my-3">
+    {% if tags %}
+    {% for post in tags  %}
+    {% comment %} <h2>List of course of the tag "{{ tags }}"</h2> {% endcomment %}
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 my-4 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+            <h3 class="mb-0">{{post.title}}</h3>
+            <div class="my-2">
+                <a href="{{post.link}}" role="button" class="btn btn-primary">Checkout</a>
+            </div>
+            
+        </div>
+        {% comment %} <div class="col-auto d-none d-lg-block">
+            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+            </svg>
+        </div> {% endcomment %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No post related to that tag yet.</p>
+    {% endif %}
+</div>
+
+ {% endblock %}
