@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect, get_list_or_404
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Count
 from taggit.models import Tag
@@ -10,6 +10,7 @@ import youtube_dl
 
 # Create your views here.
 def home(request):
+    # users_in_group = Group.objects.get(name="group name").user_set.all()
     # course = Course.objects.all()
     # playlist_info = []
     # playlist_link = []
@@ -49,26 +50,33 @@ def home(request):
 
 
 def main(request):
-    course = Course.objects.all()
+    course = Course.objects.filter(author=request.user).all()
+    # users_in_group = Group.objects.get(name="Editor").user_set.all()
     result = {
         "course": course,
-        
+        # "user": users_in_group
     }
     print(result)
     return render(request, "index.html", result)
 
 
 def listing(request):
+    # import pdb
+    # pdb.set_trace()
     course = Course.objects.all()
+    # users_in_group = Group.objects.get(name="Editor").user_set.all()
+    # user = User.objects.get(username=request.user.username, pk= request.user.id)
+    team = Course.objects.filter(author=request.user).all()
     info = {
         "course": course,
+        "user_info": team
     }
 
     return render(request, "index.html", info)
 
 
 def tag_listing(request, tags):
-    course = Course.objects.all()
+    course = Course.objects.filter(author=request.user).all()
     tags = Tag.objects.filter(slug=tags).values_list('name', flat=True)
     posts = course.filter(tags__name__in=tags)
     info = {
@@ -112,7 +120,14 @@ def techHubHome(request):
     if request.method == 'POST':
         link = request.POST['link']
         tag = request.POST['tag']
+        public = request.POST.get('public', '') == 'on'
 
+        # import pdb
+        # pdb.set_trace()
+        # # course = Course.objects.all()
+        # # users_in_group = Group.objects.get(name="Editor").user_set.all()
+        # user = User.objects.get(username=request.user.username, pk= request.user.id)
+    
         ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
 
         with ydl:
@@ -129,10 +144,8 @@ def techHubHome(request):
             playlist_info.append(video_url.copy())
 
         print(playlist_info)
-        import pdb
-        pdb.set_trace()
-        course = Course.objects.all()
-        course_result = Course(title=result.get('title'), link=link)
+        course_result = Course(title=result.get('title'), link=link, public=public)
+        course_result.author =request.user
         course_result.save()
         course_result.tags.add(tag)
 
@@ -168,6 +181,8 @@ def handleSignUp(request):
         myuser.first_name = fname
         myuser.last_name = lname
         myuser.save()
+        group = Group.objects.get(name='Editor')
+        myuser.groups.add(group)
         messages.success(
             request, " Your TechHub account has been successfully created")
         return redirect('/')

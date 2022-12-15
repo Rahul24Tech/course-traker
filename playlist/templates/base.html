@@ -110,7 +110,7 @@
  
       {% block body %} 
        {% endblock body %}
-<!--Add Course Modal -->
+{% comment %} <!--Add Course Modal --> {% endcomment %}
 <div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -127,11 +127,11 @@
     <div class="form-group">
       <label for="link">Video Link</label>
       <input type="text" class="form-control" id="link" name="link" required>
-      <label for="tag">Tag</label>
+      <label class="my-2" for="tag">Tag</label>
       <input type="text" class="form-control" id="tag" name="tag" required>
-      <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">IsPublic</label>
+      <div class="mb-3 form-check my-2">
+    <input type="checkbox" class="form-check-input" id="public" name="public">
+    <label class="form-check-label" for="public">IsPublic</label>
   </div>
 
     </div>
@@ -145,7 +145,7 @@
 
 
 
-<!-- SignUp Modal -->
+{% comment %} <!-- SignUp Modal --> {% endcomment %}
 <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModal" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
