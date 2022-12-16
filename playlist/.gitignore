@@ -1,0 +1,7 @@
+../playlist.py
+
+env
+
+___pycache__
+
+.db.sqlite3
