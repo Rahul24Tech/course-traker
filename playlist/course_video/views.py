@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from taggit.models import Tag
+from taggit.utils import _parse_tags
 from .models import *
 from .forms import CreateUserForm
 
@@ -22,6 +23,8 @@ def main(request):
     if request.method == 'POST':
         link = request.POST['link']
         tag = request.POST['tag']
+        tag_result = tag.split(",")
+        tag = _parse_tags(request.POST['tag'])
         public = request.POST.get('public', '') == 'on'
         
         ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
@@ -39,7 +42,7 @@ def main(request):
         course_result = Course(title=result.get('title'), link=link, public=public)
         course_result.author =request.user
         course_result.save()
-        course_result.tags.add(tag)
+        course_result.tags.add(*tag_result)
 
     result = {
         "course": course,
