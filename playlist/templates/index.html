@@ -19,36 +19,46 @@
                     {% if a.public %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
-                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a><a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a></td>
+                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a>
                       
                       {% if user.id == a.author.id %}
                         <td>
-                          <a href="{% url 'editing' a.id %}" role="button" target="_blank" class="btn btn-dark mr-2"> Edit </a>
+                          <a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'editing' a.id %}">
+                          <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                          </a>
 
                         </td>
                         {% else %}
                         <td></td>
-                      {% endif %}
-                      {% for tag in a.tags.all %}
-                        <td><a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}</td>
+                        {% endif %}
+                        <td>
+                        {% for tag in a.tags.all %}
+                        <a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}, 
                       {% endfor %}
+                    </td>
                     
                       {% comment %} {% endif %} {% endcomment %}
                     {% else %}
                       <th scope="row">{{forloop.counter}}</th>
-                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a><a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a></td>
+                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
                       {% if user.id == a.author.id %}
                         <td>
                           
-                          <a href="{% url 'editing' a.id %}" role="button" target="_blank" class="btn btn-dark mr-2"> Edit </a>
-
+                          <a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'editing' a.id %}">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1159/1159876.png" alt="" title="" class="img-small" width="20" height="20">
+                          </a>
                         </td>
+
                       {% else %}
                         <td></td>
                       {% endif %}
+                      <td>
                       {% for tag in a.tags.all %}
-                        <td><a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}</td>
-                      {% endfor %}
+                        <a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}
+                          {% endfor %}
+                        </td>
                     {% endif %}
                   {% endif %}
                   

@@ -6,6 +6,7 @@
       <thead>
         <tr>
           <th scope="col">S.no</th>
+          {% comment %} <th scope="col">ListID</th> {% endcomment %}
           <th scope="col">List</th>
           <th scope="col">Time</th>
           <th scope="col">Current Status</th>
@@ -15,9 +16,11 @@
         {% for dict in videoDetail %}
         <tr>
           <th scope="row">{{forloop.counter}}</th>
-          {% for value in dict.values %}
-          <td>{{ value }}</td>
-          {% endfor %}
+          {% comment %} <td>{{dict.id}}</td> {% endcomment %}
+          {% comment %} {% for value in dict %} {% endcomment %}
+          <td>{{ dict.list_item }}</td>
+          {% comment %} {% endfor %} {% endcomment %}
+          <td>{{dict.time}}</td>
           <td>
             <select>
                 
