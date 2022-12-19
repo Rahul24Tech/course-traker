@@ -6,143 +6,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>{% block title %}   {% endblock title %}</title>
   </head>
+  
   <body>
-    
-    <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">TechHub</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-            <form method="get" action="/search"class="form-inline my-2 my-lg-0 mx-3">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a href="#" class="pull-left mx-2"><img style="height:32px;" src="data:image/png;base64,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"></a>
+        <a class="navbar-brand" href="/">TechHub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% block homeactive %}  {% endblock homeactive %}">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% comment %} <li class="nav-item {% block aboutactive %}  {% endblock aboutactive %}" >
+              <a class="nav-link" href="/about">About</a>
+            </li> {% endcomment %}
+            {% if user.is_authenticated %}
+            <li class="nav-item {% block contactactive %}  {% endblock contactactive %} ">
+              <a class="nav-link" href="/contact">Contact</a>
+            </li>
+            <li class="nav-item {% block blogactive %}  {% endblock blogactive %} ">
+              <a class="nav-link" href="course">Course</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="contact">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="course">Course</a>
+            </li>
+            {% endif %}
+            
+          </ul>
+          <div class="ml-auto form-inline">
+          <form method="get" action="/search"class="my-2 my-lg-0 mx-3">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" id="query">
             <button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
-            <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a>
+            
           </form>
-          
-          <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
-              Add Course
-              </button>
-          <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#loginModal">
-            Login
-            </button>
-            <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#signupModal">
-                SignUp
-                </button>
+{% comment %} {% if user.is_superuser %} {% endcomment %}
+<!-- Button to  trigger SignUp modal -->
+
+{% comment %} <ul class="navbar-nav">
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+     Welcome {{request.user}}
+    </a>
+    <div class="dropdown-menu aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="logout">Logout</a>
+    </div>
+  </li>
+  </ul> {% endcomment %}
+  
+<!-- Button to  trigger Login modal -->
+{% if user.is_authenticated %}
+
+<ul class="navbar-nav">
+  <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a>
+  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
+    Add Course
+  </button>
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+   Welcome {{request.user}}
+  </a>
+  <div class="dropdown-menu aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" href="logout">Logout</a>
+  </div>
+</li>
+</ul>
+
+{% else %}
+<a href="login" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Login </a>
+
+<a href="signup" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Signup </a>
+{% endif %}
+
+</div>
         </div>
       </nav>
-      
-      <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModal" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="signupModalTitle">SignUp Here</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action= "/signup" method='post'>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" class="form-control" id="username" name="username" placeholder="Choose a unique username" required>
-        </div>
-        <div class="form-group">
-          <label for="fname">First Name</label>
-          <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter Your First Name" required>
-        </div>
-        <div class="form-group">
-          <label for="lname">Last Name</label>
-          <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Your Last Name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email address</label>
-          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
-        </div>
-        <div class="form-group">
-          <label for="pass1">Choose a password</label>
-          <input type="password" class="form-control" id="pass1" name="pass1" placeholder="Choose Your Password" required>
-        </div>
-        <div class="form-group">
-          <label for="pass2">Confirm Password</label>
-          <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Enter your password again" required>
-        </div>
-       
-      
-              {% csrf_token %}
-              <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-            </div>
-            <div class="modal-footer">
-            </div>
+      {% for message in messages  %}            
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <strong>Message : </strong> {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
+      {% endfor %}
+
+
+
+ 
+      {% block body %} 
+       {% endblock body %}
+{% comment %} <!--Add Course Modal --> {% endcomment %}
+<div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="courseModalTitle">Add Course Here</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-      </div>
-      {% block body %}{% endblock %}
-      <div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModal" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="courseModalTitle">Add Course Here</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="/" method="POST"> 
-                  {% csrf_token %}
-        {% comment %} <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" class="form-control" id="title" name="title" required>
-        </div> {% endcomment %}
-        <div class="form-group">
-          <label for="link">Video Link</label>
-          <input type="text" class="form-control" id="link" name="link" required>
-        </div>
-        {% comment %} <div class="form-group">
-            <label for="tag">Tag</label>
-            <input type="text" class="form-control" id="tag" name="tag" required>
-          </div> {% endcomment %}
-              <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-       
-           </div>
-  
-      
-      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="loginModalTitle">Login Here</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="/login" method="POST"> 
-                  {% csrf_token %}
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" class="form-control" id="loginusername" name="loginusername" placeholder="Enter your username "required>
-        </div>
-        <div class="form-group">
-          <label for="pass">Enter your password </label>
-          <input type="password" class="form-control" id="loginpassword" name="loginpassword" placeholder="Enter your password "required>
-        </div>
-       
-              <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-       
-           </div>
-          
+        <div class="modal-body">
+          <form action="course" method="post"> 
+              {% csrf_token %}
+    
+    <div class="form-group">
+      <label for="link">Video Link</label>
+      <input type="text" class="form-control" id="link" name="link" required>
+      <label class="my-2" for="tag">Tag</label>
+      <input type="text" class="form-control" id="tag" name="tag" required>
+      <div class="mb-3 form-check my-2">
+    <input type="checkbox" class="form-check-input" id="public" name="public">
+    <label class="form-check-label" for="public">IsPublic</label>
+  </div>
+
+    </div>
+    
+          <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+</div>
+</div>
+       </div>
+
+
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   </body>
 </html>
