@@ -15,21 +15,9 @@ class Course(models.Model):
     tags = TaggableManager()
     public = models.BooleanField(default=False)
     
-    
+
     def __str__(self):
         return self.title
-
-
-class Status(models.Model):
-    STATUS_CHOICES =(
-    ("1", "Yet to Start"),
-    ("2", "In Progress"),
-    ("3", "On Hold"),
-    ("4", "Completed"),)
-    status = models.CharField(max_length=1, choices = STATUS_CHOICES)
-    
-    def __str__(self) -> str:
-        return self.status
     
     
     
@@ -47,15 +35,15 @@ class Contact(models.Model):
       
       
 class PlaylistItem(models.Model):
-    
-    
     playlist_id = models.UUIDField(
      primary_key = True,
      default = uuid.uuid4,
      editable = False),
     list_item = models.CharField(max_length=150)
-    time = models.IntegerField()
-    
+    time = models.IntegerField(null=True, blank=True)
+    link = models.URLField(max_length=200, blank='true')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null='true')
+    status = models.CharField(max_length=50)
     playlist_title = models.CharField(max_length=100)
     
     def __str__(self):

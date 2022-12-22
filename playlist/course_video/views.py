@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,18 +6,24 @@ from taggit.models import Tag
 from taggit.utils import _parse_tags
 
 from .models import *
-from .forms import CreateUserForm, ContactForm
+from .forms import CreateUserForm, ContactForm, StatusForm
 
 import youtube_dl
+from copy import deepcopy
 
 # Create your views here.
+
 
 def home(request):
     return render(request, "home.html")
 
 @login_required(login_url="login")
 def main(request):
+    # import pdb
+    # pdb.set_trace()
     course = Course.objects.all()
+   
+    
     if request.method == 'POST':
         link = request.POST['link']
         tag = request.POST['tag']
@@ -31,38 +37,63 @@ def main(request):
                 link,
                 download=False  # We just want to extract the info
             )
-
+        
         playlist_info = []
         for video in result['entries']:
             video_url = dict((k, video[k])
-                             for k in ['title', 'duration'] if k in video)
+                             for k in ['title', 'duration', 'webpage_url'] if k in video)
             playlist_info.append(video_url.copy())
         course_result = Course(title=result.get('title'), link=link, public=public)
-        # import pdb 
-        # pdb.set_trace()
         course_result.author =request.user
         course_result.save()
+        
         course_result.tags.add(*tag_result)
+        # playlist = pafy.get_playlist(link)
+        # items = playlist["items"]
+        # import pdb
+        # pdb.set_trace()
         print(playlist_info)
         for i in playlist_info:
             title = i.get('title')
             duration = i.get('duration')
-            list_store = PlaylistItem(list_item=title, time=duration, playlist_title=result.get('title'))
-            # list_store.city = course_result.title
-            # Course.objects.distinct().filter(toy__name__icontains='star')
-            # p = Course.objects.filter(city__title=result.get('title'))
+            playlist_url = i.get("webpage_url")
+            list_store = PlaylistItem(list_item=title, time=duration, playlist_title=result.get('title'), link=playlist_url)
             list_store.save()
 
-
+    course_id = []
+    for item in course.iterator():
+        course_list = Course.objects.get(id=item.id)
+        course_id.append(course_list)
+        
+    progress = {}
+    for data in course_id:
+        global_count=0
+        list_total = PlaylistItem.objects.filter(playlist_title=data.title).count()
+        list_item = PlaylistItem.objects.filter(playlist_title=data.title)
+        for title in list_item.iterator():
+            if title.status == "Completed":
+                global_count = global_count+1
+            if global_count==0:
+                percentage=0
+            else:
+                total=global_count
+                percentage = 100 * float(total)/float(list_total)
+           
+            
+            progress[data.id]=round(percentage)      
+        
     result = {
         "course": course,
-    }
+        "per": progress
+        }
+    
     return render(request, "index.html", result)
-
+    
 
 @login_required(login_url="login")
 def listing(request):
     course = Course.objects.all()
+    
     info = {
         "course": course
     }
@@ -78,53 +109,21 @@ def tag_listing(request, tags):
     info = {
         "tags": posts,
     }
-
     return render(request, "tag.html", info)
 
 @login_required(login_url="login")
 def listing(request, id):
-    import pdb
-    pdb.set_trace()
-    course_list = Course.objects.get(id=id)
-    list_item = PlaylistItem.objects.filter(playlist_title=course_list.title)
-    # destination = get_object_or_404(Course, id=id)
-    # if course_list.id == destination.id:
-    # #     Item = PlaylistItem.objects.get(id=course_list.id)
-    #     Item = PlaylistItem.objects.filter(city__in=Course.objects.filter(id=course_list.id))
-
-
-    # for i in Item.iterator():
-    #     print(i)   
-    
-    # context = {
-    #     'destination': destination,
-    # }
-    # parents_id_that_have_childs = PlaylistItem.objects.filter(parent_id__isnull=False).values_list('playlist_id', flat=True)
-
-    # parents = Course.objects.filter(id__in=list(set(parents_id_that_have_childs)))
-
-    # playlist = PlaylistItem.objects.get(id=course_list.id)
-    # link = course_list.link
-    # ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
-    # with ydl:
-    #     result = ydl.extract_info(
-    #         link,
-    #         download=False  # We just want to extract the info
-    #     )
-    # playlist_info = []
-    # print(result)
-    # for video in result['entries']:
-    #     video_url = dict((k, video[k])
-    #                      for k in ['title', 'duration'] if k in video)
-    #     playlist_info.append(video_url.copy())
-
     # import pdb
     # pdb.set_trace()
-    
-    status = Status.objects.all()
+    status_data = ["Yet to Start", "In Progress", "On Hold", "Completed"]
+    course_list = Course.objects.get(id=id)
+    list_item = PlaylistItem.objects.filter(playlist_title=course_list.title)
+    request.session['id']=id
+
     course_info = {
         "videoDetail": list_item,
-        "status": status
+        "id": id,
+        "overall": status_data
     }
 
     return render(request, "List.html", course_info)
@@ -154,10 +153,12 @@ def handeLogin(request):
             messages.info(request, "Username OR Password is incorrect")
     return render(request, "login.html")
 
+
 def handelLogout(request):
     logout(request)
     messages.success(request, "Successfully logged out")
     return redirect('/')
+
 
 @login_required(login_url="login")
 def contact(request):
@@ -178,6 +179,7 @@ def contact(request):
                 request, "Your message has been successfully sent")
     return render(request, "contact.html")
 
+
 @login_required(login_url="login")
 def search(request):
     query=request.GET['query']
@@ -185,14 +187,47 @@ def search(request):
     params={'allCourse': allCourse}
     return render(request, 'search.html', params)
 
+
 @login_required(login_url="login")
 def editing(request, id):
     course = Course.objects.get(id=id)
+    string_var = course.title
+    item = PlaylistItem.objects.filter(playlist_title=string_var)
     if request.method == "POST":
         title = request.POST['title']
         course.title = title
         course.save(update_fields=["title"])
+        PlaylistItem.objects.filter(playlist_title=string_var).update(playlist_title=course.title)
         messages.success(request, "Successfully updated title")
         return redirect('/course')
         
     return render(request, "edit.html", {"course": course, "id":id})
+
+
+def getstatus(request, id):
+    update_status = PlaylistItem.objects.get(id=id)
+    list_id = request.session.get('id')
+    
+    if request.method == "POST":
+        choice = request.POST['choice']
+        update_status.author =request.user
+        update_status.status = choice
+        update_status.save(update_fields=["status", "author"])
+
+    return redirect('listing', id=list_id)
+
+
+def clone(request):
+    course = Course.objects.all()
+    for item in course.iterator():
+        if request.user.id != item.author.id and item.public:
+            old_obj = deepcopy(item)
+            old_tag = old_obj.tags.all()
+            item.id = None
+            item.author = request.user
+            item.save()
+            for tag in old_tag.iterator():
+                item.tags.add(tag.name)
+    return redirect("main")
+
+    

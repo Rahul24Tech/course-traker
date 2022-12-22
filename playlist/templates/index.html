@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
+{% block nav %}
+{% comment %} <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a> {% endcomment %}
+<a href="clone" role="button" class="btn btn-success mr-2">Add Clone</a>  
+{% comment %} <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
+    Add Clone
+  </button> {% endcomment %}
+{% endblock nav %}
 {% block body %}
     <center class="my-2"><h1>List of Playlist</h1></center>
     <table class="table">
@@ -9,64 +16,119 @@
             <th scope="col">Title</th>
             <th scope="col">Action</th>
             <th scope="col">Tag</th>
+            <th scope="col">Progress</th>
           </tr>
         </thead>
-        {% for a in course %}
         <tbody>
+          {% for a in course %}
                 {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
                   {% comment %} style="pointer-events: none"/ {% endcomment %}
-                  {% if user.is_authenticated %}
-                    {% if a.public %}
+                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                    {% if a.public and user.is_authenticated %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
-                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a>
+                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
                       
                       {% if user.id == a.author.id %}
                         <td>
-                          <a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
                           <a href="{% url 'editing' a.id %}">
                           <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
                           </a>
 
                         </td>
+                        
                         {% else %}
-                        <td></td>
+                        <td>
+                          <a  target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                        </td>
                         {% endif %}
                         <td>
                         {% for tag in a.tags.all %}
-                        <a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}, 
+                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
                       {% endfor %}
                     </td>
-                    
-                      {% comment %} {% endif %} {% endcomment %}
+                    {% for item, values in per.items %}
+                    {% if item == a.id %}
+                    {% if user.id == a.author.id %}
+                    <td>
+                      
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
+                      </div>
+                      
+                    </td>
                     {% else %}
-                      <th scope="row">{{forloop.counter}}</th>
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                      </div>
+                    </td>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    {% comment %} {% endif %} {% endcomment %}
+                      {% comment %} {% endif %} {% endcomment %}
+                  </tr>
+                    {% else %}
+                    
+                    {% if user.id == a.author.id %}
+                    <tr>
+                    <th scope="row">{{forloop.counter}}</th>
                       <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
-                      {% if user.id == a.author.id %}
                         <td>
                           
-                          <a href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
                           <a href="{% url 'editing' a.id %}">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1159/1159876.png" alt="" title="" class="img-small" width="20" height="20">
-                          </a>
+                            <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
                         </td>
 
-                      {% else %}
-                        <td></td>
-                      {% endif %}
+                      {% comment %} {% else %}
+                        <td>
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          
+                        </td>
+                      {% endif %} {% endcomment %}
                       <td>
                       {% for tag in a.tags.all %}
-                        <a href="{% url 'tag_listing' tag.slug %}"</a>{{tag.name}}
+                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
                           {% endfor %}
                         </td>
+                    {% for item, values in per.items %}
+                    {% if item == a.id %}
+                    {% if user.id == a.author.id %}
+                    <td>
+                      
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
+                      </div>
+                    </td>
+                    {% else %}
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                      </div>
+                    </td>
                     {% endif %}
-                  {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% else %}
+                    <tr>
+                    </tr>
+                    {% endif %}
+                    
+                        {% comment %} {% endfor %} {% endcomment %}
+                       
+                    {% endif %}
+                  {% comment %} {% endif %} {% endcomment %}
                   
                 
-      </tr>
       
+      
+      {% endfor %}
     </tbody>
-    {% endfor %}
       </table>
       {% endblock body %}
     

@@ -15,3 +15,13 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = "__all__"
+        
+        
+class StatusForm(forms.Form):
+    STATUS_CHOICES =(
+    ("Yet to Start", "Yet to Start"),
+    ("In Progress", "In Progress"),
+    ("On Hold", "On Hold"),
+    ("Completed", "Completed"),)
+    status = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          choices=STATUS_CHOICES)
