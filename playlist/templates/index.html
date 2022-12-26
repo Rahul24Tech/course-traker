@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
 {% block nav %}
-{% comment %} <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a> {% endcomment %}
 <a href="clone" role="button" class="btn btn-success mr-2">Add Clone</a>  
-{% comment %} <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
-    Add Clone
-  </button> {% endcomment %}
+
+  <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
 {% endblock nav %}
+
 {% block body %}
     <center class="my-2"><h1>List of Playlist</h1></center>
     <table class="table">

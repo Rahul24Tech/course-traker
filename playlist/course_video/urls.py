@@ -17,5 +17,5 @@ urlpatterns = [
     path('search', search, name="search"),
     path('getstatus/<int:id>', getstatus, name="getstatus"),
     path('clone', clone, name="clone"),
-    
+    path('course_csv', course_csv, name="course_csv"),
 ]

@@ -14,6 +14,7 @@ class Course(models.Model):
     link = models.URLField(max_length=200, blank='true')
     tags = TaggableManager()
     public = models.BooleanField(default=False)
+    percentage = models.IntegerField(null=True)
     
 
     def __str__(self):
