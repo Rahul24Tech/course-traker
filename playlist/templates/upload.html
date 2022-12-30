@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% comment %} {% block uploadNav %}
+<button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
+    Add Course
+  </button>
+{% endblock uploadNav %} {% endcomment %}
+{% block body %}
+    
+        <form action="{% url "upload" %}" method="post" enctype="multipart/form-data" class="my-2">
+            {% csrf_token %}
+            <input type="file"
+                   title="Upload excel file"
+                   name="excel_file"
+                   style="border: 1px solid black; padding: 5px;"
+                   required="required">
+            <p>
+            <input type="submit"
+                   value="Upload"
+                   class= "btn btn-dark my-2">
+        </form>
+
+        <p></p>
+        {% comment %} <hr> {% endcomment %}
+
+    
+    {% endblock body %}
+</html>

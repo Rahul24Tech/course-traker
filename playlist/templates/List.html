@@ -1,21 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
-    {% comment %}
-    <form action="list" method="post">
-      {% csrf_token %}
-      <div class="container">
-        <label for="Title"
-          >Playlist Link: <input type="text" name="link" id="link"
-        /></label>
-        <button type="submit" class="btn btn-primary">Fetch</button>
-      </div>
-    </form>
-    {% endcomment %}
-    <h1>Playlist Info</h1>
+    <button onclick="history.back()"><img src="https://cdn-icons-png.flaticon.com/512/3114/3114883.png " alt="" title="" class="img-small" width="30" height="30"></button>
+    <center class="mx-2"><h1>All Playlist</h1></center>
     <table class="table">
       <thead>
         <tr>
           <th scope="col">S.no</th>
+          {% comment %} <th scope="col">ListID</th> {% endcomment %}
           <th scope="col">List</th>
           <th scope="col">Time</th>
           <th scope="col">Current Status</th>
@@ -25,21 +16,60 @@
         {% for dict in videoDetail %}
         <tr>
           <th scope="row">{{forloop.counter}}</th>
-          {% for value in dict.values %}
-          <td>{{ value }}</td>
-          {% endfor %}
+          {% comment %} <td>{{dict.id}}</td> {% endcomment %}
+          {% comment %} {% for value in dict %} {% endcomment %}
+          <td><a target="_blank" style="color: inherit;" href={{dict.link}}>{{ dict.list_item }}</a></td>
+          {% comment %} {% endfor %} {% endcomment %}
+          <td>{{dict.time}}</td>
+         
+
+          
           <td>
-            <select>
-                
-                {% for result in status %}
-                {% comment %} <option disabled="true" selected></option> {% endcomment %}
-                <option>{{result.status}}</option>
-                {% endfor %}
-            </select>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+            <div class="card">
+              <div class="card-body">
+                <form action="{% url 'getstatus' dict.id %}" method="post">
+                  {% csrf_token %}
+                  {% comment %} <label for="choice">Choice</label> {% endcomment %}
+                  <select name="choice" class="form-control">
+                    {% if dict.status == "Yet to Start" %}
+                    <option value="Yet to Start" selected>Yet to Start</option>
+                    {% else %}
+                    <option value="Yet to Start">Yet to Start</option>
+                    {% endif %}
+                    {% if dict.status == "In Progress" %}
+                    <option value="In Progress" selected>In Progress</option>
+                    {% else %}
+                    <option value="In Progress">In Progress</option>
+                    {% endif %}
+                    {% if dict.status == "On Hold" %}
+                    <option value="On Hold" selected>On Hold</option>
+                    {% else %}
+                    <option value="On Hold">On Hold</option>
+                    {% endif %}
+                    {% if dict.status == "Completed" %}
+                    <option value="Completed" selected>Completed</option>
+                    {% else %}
+                    <option value="Completed">Completed</option>
+                    {% endif %}
+                  </select>
+                      {% comment %} <input type="submit" value="Save"> {% endcomment %}
+                      
+                      {% comment %} {% for result in overall %}
+                      <option value="{{result}}" >
+                        {% endfor %}
+                        </select> {% endcomment %}
+                    
+                      
+                        <button type="submit" class="btn btn-dark my-2">Save</button>
+                      
+                    </form>
+                  </div>
+                  </div>  
+                  {% comment %} <option disabled="true" selected></option> {% endcomment %}
+                </td> 
+              </tr>
+              {% endfor %}
+            </tbody>
     </table>
 
 {% endblock %}

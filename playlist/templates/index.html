@@ -1,29 +1,152 @@
 {% extends 'base.html' %}
+{% block title %}Course{% endblock title %}
+{% block nav %} 
+<div class="ml-auto">
+{% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
+<a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
+  <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
+</div>
+{% endblock nav %}
+
 {% block body %}
-    <center><h1>List of Playlist</h1></center>
+
+    <center class="my-2"><h1>List of Playlist</h1></center>
+    <div class="ml-auto my-2">
+  
+      <a href="download" role="button" class="btn btn-success mr-2">Sample Excel</a>
+    </div>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">S.no</th>
             <th scope="col">Title</th>
-            <th scope="col">Link</th>
-            {% comment %} <th scope="col">Tag</th> {% endcomment %}
+            <th scope="col">Action</th>
+            <th scope="col">Tag</th>
+            <th scope="col">Progress</th>
           </tr>
         </thead>
         <tbody>
-            {% for a in course %}
-            <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td>{{a.title}}</td>
-                <td><a href={{a.link}}>{{a.link}}</a></td>
-                {% comment %} <td>{{a.tag}}</></td> {% endcomment %}
-                {% comment %} <td>{{a.course_id}}</td> {% endcomment %}
-            </tr>
-            {% endfor %}
-         
-        </tbody>
+          {% for a in courses %}
+                {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
+                  {% comment %} style="pointer-events: none"/ {% endcomment %}
+                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                    {% if a.public and user.is_authenticated %}
+                    <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
+                      
+                      {% if user.id == a.author.id %}
+                        <td>
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'editing' a.id %}">
+                          <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                          </a>
+
+                        </td>
+                        
+                        {% else %}
+                        <td>
+                          <a  target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'clone' a.id %}">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="" class="img-small" width="20" height="20"></a>
+                          
+                        </td>
+                        {% endif %}
+                        <td>
+                        {% for tag in a.tags.all %}
+                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
+                      {% endfor %}
+                    </td>
+                    {% for item, values in per.items %}
+                    {% if item == a.id %}
+                    {% if user.id == a.author.id %}
+                    <td>
+                      
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
+                      </div>
+                      
+                    </td>
+                    {% else %}
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                      </div>
+                    </td>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    {% comment %} {% endif %} {% endcomment %}
+                      {% comment %} {% endif %} {% endcomment %}
+                  </tr>
+                    {% else %}
+                    
+                    {% if user.id == a.author.id %}
+                    <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
+                        <td>
+                          
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'editing' a.id %}">
+                            <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
+                        </td>
+
+                      {% comment %} {% else %}
+                        <td>
+                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          
+                        </td>
+                      {% endif %} {% endcomment %}
+                      <td>
+                      {% for tag in a.tags.all %}
+                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
+                          {% endfor %}
+                        </td>
+                    {% for item, values in per.items %}
+                    {% if item == a.id %}
+                    {% if user.id == a.author.id %}
+                    <td>
+                      
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
+                      </div>
+                    </td>
+                    {% else %}
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                      </div>
+                    </td>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% else %}
+                    <tr>
+                    </tr>
+                    {% endif %}
+                    
+                        {% comment %} {% endfor %} {% endcomment %}
+                       
+                    {% endif %}
+                  {% comment %} {% endif %} {% endcomment %}
+                  
+                
+      
+      
+      {% endfor %}
+    </tbody>
       </table>
-      {% endblock %}
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      {% if courses.has_previous %}
+        <a href="?page=1">&laquo First</a>
+        <a href="?page={{courses.previous_page_number}}">Previous</a>
+      {% endif %}
+      Page {{courses.number}} of {{courses.paginator.num_pages}}
+      {% if courses.has_next %}
+      <a href="?page={{courses.next_page_number}}">Next</a>
+      <a href="?page={{courses.paginator.num_pages}}">Last &raquo</a>
+      {% endif %}
+      {% endblock body %}
     

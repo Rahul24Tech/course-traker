@@ -3,7 +3,21 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path("", main, name="main"),
-    path('course', detail, name="detail"),
-    path("list", playList, name="playList")
+    path("", home, name="home"),
+    path("course", main, name="main"),
+    path('signup', handleSignUp, name="signup"),
+    path('login', handeLogin, name="login"),
+    path('logout', handelLogout, name="handleLogout"),
+    path('contact', contact, name="contact"),
+    path("listing", listing, name="listing"),
+    path("listing/<int:id>/", listing, name="listing"),
+    path("listing/<int:id>/<int:pk>", listing, name="listing"),
+    path("editing/<int:id>/", editing, name="editing"),
+    path("tag_listing/<slug:tags>/", tag_listing, name="tag_listing"),
+    path('search', search, name="search"),
+    path('getstatus/<int:id>', getstatus, name="getstatus"),
+    path('clone/<int:id>', clone, name="clone"),
+    path('course_csv', course_csv, name="course_csv"),
+    path('upload', upload, name="upload"),
+    path('download', download, name="download"),
 ]
