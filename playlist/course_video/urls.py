@@ -16,6 +16,8 @@ urlpatterns = [
     path("tag_listing/<slug:tags>/", tag_listing, name="tag_listing"),
     path('search', search, name="search"),
     path('getstatus/<int:id>', getstatus, name="getstatus"),
-    path('clone', clone, name="clone"),
+    path('clone/<int:id>', clone, name="clone"),
     path('course_csv', course_csv, name="course_csv"),
+    path('upload', upload, name="upload"),
+    path('download', download, name="download"),
 ]

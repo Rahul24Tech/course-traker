@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
-{% block nav %}
-<a href="clone" role="button" class="btn btn-success mr-2">Add Clone</a>  
-
+{% block nav %} 
+<div class="ml-auto">
+{% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
+<a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
   <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
+</div>
 {% endblock nav %}
 
 {% block body %}
+
     <center class="my-2"><h1>List of Playlist</h1></center>
+    <div class="ml-auto my-2">
+  
+      <a href="download" role="button" class="btn btn-success mr-2">Sample Excel</a>
+    </div>
     <table class="table">
         <thead>
           <tr>
@@ -19,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for a in course %}
+          {% for a in courses %}
                 {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
                   {% comment %} style="pointer-events: none"/ {% endcomment %}
                   {% comment %} {% if user.is_authenticated %} {% endcomment %}
@@ -40,6 +47,9 @@
                         {% else %}
                         <td>
                           <a  target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a href="{% url 'clone' a.id %}">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="" class="img-small" width="20" height="20"></a>
+                          
                         </td>
                         {% endif %}
                         <td>
@@ -129,5 +139,14 @@
       {% endfor %}
     </tbody>
       </table>
+      {% if courses.has_previous %}
+        <a href="?page=1">&laquo First</a>
+        <a href="?page={{courses.previous_page_number}}">Previous</a>
+      {% endif %}
+      Page {{courses.number}} of {{courses.paginator.num_pages}}
+      {% if courses.has_next %}
+      <a href="?page={{courses.next_page_number}}">Next</a>
+      <a href="?page={{courses.paginator.num_pages}}">Last &raquo</a>
+      {% endif %}
       {% endblock body %}
     

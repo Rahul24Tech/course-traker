@@ -35,6 +35,7 @@
             <li class="nav-item {% block blogactive %}  {% endblock blogactive %} ">
               <a class="nav-link" href="/course">Course</a>
             </li>
+            
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="/contact">Contact</a>
@@ -42,11 +43,12 @@
             <li class="nav-item">
               <a class="nav-link" href="/course">Course</a>
             </li>
+           
             {% endif %}
             
           </ul>
           <div class="ml-auto form-inline">
-          <form method="get" action="/search"class="my-2 my-lg-0 mx-3">
+          <form method="get" action="/search" class=" my-2 my-lg-0 mx-3">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" id="query">
             <button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
             
@@ -69,12 +71,14 @@
 <!-- Button to  trigger Login modal -->
 {% if user.is_authenticated %}
 
-<ul class="navbar-nav">
+<ul class="navbar-nav ml-auto form-inline">
   {% comment %} <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a> {% endcomment %}
   <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
     Add Course
   </button>
+  {% comment %} {% block uploadNav %}{% endblock uploadNav %} {% endcomment %}
   {% block nav %}{% endblock nav %}
+  {% block uploadNav %}{% endblock uploadNav %}
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
    Welcome {{request.user}}
@@ -140,9 +144,7 @@
 </div>
 </div>
        </div>
-
-
-
+       {% block upload %}{% endblock upload %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

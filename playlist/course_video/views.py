@@ -7,10 +7,14 @@ from taggit.utils import _parse_tags
 
 from .models import *
 from .forms import CreateUserForm, ContactForm, StatusForm
+from django.core.paginator import Paginator
 
 import youtube_dl
 import openpyxl
 import re
+import calendar
+import time
+from datetime import datetime
 from copy import deepcopy
 
 # Create your views here.
@@ -23,6 +27,9 @@ def home(request):
 @login_required(login_url="login")
 def main(request):
     course = Course.objects.all()
+    p = Paginator(Course.objects.all(), 4)
+    page = request.GET.get('page')
+    courses = p.get_page(page)
     if request.method == 'POST':
         link = request.POST['link']
         tag = request.POST['tag']
@@ -78,10 +85,12 @@ def main(request):
             progress[data.id] = round(percentage)
     request.session['progress'] = progress
    
-
+    
+    
     result = {
         "course": course,
-        "per": progress
+        "per": progress,
+        "courses": courses
     }
 
     return render(request, "index.html", result)
@@ -215,17 +224,16 @@ def getstatus(request, id):
     return redirect('listing', id=list_id)
 
 
-def clone(request):
-    course = Course.objects.all()
-    for item in course.iterator():
-        if request.user.id != item.author.id and item.public:
-            old_obj = deepcopy(item)
-            old_tag = old_obj.tags.all()
-            item.id = None
-            item.author = request.user
-            item.save()
-            for tag in old_tag.iterator():
-                item.tags.add(tag.name)
+def clone(request, id):
+    course = Course.objects.get(id=id)
+    if request.user.id != course.author.id and course.public:
+        old_obj = deepcopy(course)
+        old_tag = old_obj.tags.all()
+        course.id = None
+        course.author = request.user
+        course.save()
+        for tag in old_tag.iterator():
+            course.tags.add(tag.name)
     return redirect("main")
 
 
@@ -234,6 +242,7 @@ def course_csv(request):
     sheetOne = wb.create_sheet("ListOfPlaylist")
     course = Course.objects.filter(public=False)
     data_view = []
+   
     for item in course.iterator():
 
         if request.user.id == item.author.id:
@@ -245,12 +254,12 @@ def course_csv(request):
             old_tag = item.tags.all()
             for tag in old_tag.iterator():
                 data = (item.title, item.link, tag.name, progress_data)
-
+            
             data_view.append(list(data))
             item_list = [tuple(l) for l in data_view]
             add_tuple = ("Title", "Link", "Tag", "Progress")
             item_list.insert(0, add_tuple)
-
+            
             sheetTwo = wb.create_sheet(item.title)
             per_item = PlaylistItem.objects.filter(playlist_title=item.title)
             playlist_view = []
@@ -259,17 +268,90 @@ def course_csv(request):
                 valid_name = reg.findall(item.list_item)
                 if valid_name:
                     for nv in valid_name:
-                        per_item = item.list_item.replace(nv, "")
-                playlist_data = (per_item, item.time, item.status)
+                        per_item = item.list_item.replace(nv, " ")
+                    playlist_data = (per_item, item.time, item.link, item.status)
+                else:
+                    playlist_data = (item.list_item, item.time, item.link,item.status)
                 playlist_view.append(list(playlist_data))
                 item_playlist = [tuple(l) for l in playlist_view]
-                add_tuple = ("List", "Time", "Current Status")
+                add_tuple = ("List", "Time", "Link", "Current Status")
                 item_playlist.insert(0, add_tuple)
+            
             for i in item_playlist:
                 sheetTwo.append(i)
-
+    
     for playlist_item in item_list:
         sheetOne.append(playlist_item)
     wb.remove(wb['Sheet'])
-    wb.save("demo.xlsx")
+    current_GMT = time.gmtime()
+
+# ts stores timestamp
+    ts = calendar.timegm(current_GMT)
+    date_time = datetime.fromtimestamp(ts)
+
+# convert timestamp to string in dd-mm-yyyy HH:MM:SS
+    str_date_time = date_time.strftime("%d-%m-%Y, %H:%M:%S")
+    wb.save(f'{request.user} {str_date_time}.xlsx')
     return redirect("main")
+
+
+def upload(request):
+    if request.method == "POST":
+        excel_file = request.FILES["excel_file"]
+
+        wb = openpyxl.load_workbook(excel_file)
+        sheets = wb.sheetnames
+        excel_data = []
+        excel_playlist = list()
+        for i in sheets:
+            excel_data = []
+            work = wb[i]
+            
+            for row in work.iter_rows():
+                row_data = list()
+                for cell in row:
+                    row_data.append(str(cell.value))
+                excel_data.append(row_data)
+            excel_data.insert(0, i)
+            excel_playlist.append(excel_data)
+                
+        for item in excel_playlist:
+            if ['Title', 'Link', 'Tag', 'Progress'] == item[1]:
+                to_exclude = {1}
+                data = [element for i, element in enumerate(item) if i not in to_exclude]
+                del data[0]
+                for item in data:
+                    try:
+                        old_course = Course.objects.get(title=item[0])
+                    except Course.DoesNotExist:
+                        old_course = None
+                    if old_course:
+                        messages.info(request, "course is already present in List of playlist")
+                    else:
+                        course = Course.objects.create(author=request.user, title=item[0], link=item[1], public=True)
+                        course.tags.add(item[2])
+                        course.save()
+            elif ['List', 'Time', 'Link', 'Current Status'] == item[1]:
+                exclude = {1}
+                playlist_data = [element for i, element in enumerate(item) if i not in exclude]
+                title = playlist_data[0]
+                del playlist_data[0]
+                for item in playlist_data:
+                    playlist = PlaylistItem.objects.create(
+                                list_item=item[0], time=item[1], link=item[2], author=request.user, status="", playlist_title=title)
+                    playlist.save()
+            else:
+                messages.info(request, "Format of excel sheet not meet as expected please Go through the sample excel file for correct format")
+      
+        return redirect(main)
+            
+    return render(request, 'upload.html')
+
+
+def download(request):
+    filename = "sample.xlsx" # this is the file people must download
+    with open(filename, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=' + filename
+        response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-16'
+        return response
