@@ -1,18 +1,20 @@
 TechHub
 
-  This app contains all new technology or trending videos where user can explore and learn. 
+  TechHub is a platform where user can upload new and trending or technology related video playlist where user can create his private or public video.
   
   
 Installation:
  
- 1. pip install django-taggit
- 2. pip install youtube_dl
- 3. pip install django4.0
- 4. pip install -r requirements. txt
+ 1. pip install -r requirements. txt
  
  
 Run Test:
  
  1.python3 manage.py runserver:- this will run at port:8000
+ 
+Features:
+  1. Download excel file video playlist.
+  2. User can upload excel file in an app.
+  3. And for refernce sample excel file added.
  
  
