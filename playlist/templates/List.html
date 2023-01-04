@@ -6,7 +6,6 @@
       <thead>
         <tr>
           <th scope="col">S.no</th>
-          {% comment %} <th scope="col">ListID</th> {% endcomment %}
           <th scope="col">List</th>
           <th scope="col">Time</th>
           <th scope="col">Current Status</th>
@@ -16,10 +15,7 @@
         {% for dict in videoDetail %}
         <tr>
           <th scope="row">{{forloop.counter}}</th>
-          {% comment %} <td>{{dict.id}}</td> {% endcomment %}
-          {% comment %} {% for value in dict %} {% endcomment %}
           <td><a target="_blank" style="color: inherit;" href={{dict.link}}>{{ dict.list_item }}</a></td>
-          {% comment %} {% endfor %} {% endcomment %}
           <td>{{dict.time}}</td>
          
 
@@ -52,20 +48,10 @@
                     <option value="Completed">Completed</option>
                     {% endif %}
                   </select>
-                      {% comment %} <input type="submit" value="Save"> {% endcomment %}
-                      
-                      {% comment %} {% for result in overall %}
-                      <option value="{{result}}" >
-                        {% endfor %}
-                        </select> {% endcomment %}
-                    
-                      
-                        <button type="submit" class="btn btn-dark my-2">Save</button>
-                      
-                    </form>
+                    <button type="submit" class="btn btn-dark my-2">Save</button>
+                  </form>
                   </div>
                   </div>  
-                  {% comment %} <option disabled="true" selected></option> {% endcomment %}
                 </td> 
               </tr>
               {% endfor %}

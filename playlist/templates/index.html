@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
 {% block nav %} 
-<div class="ml-auto">
+<div class="ml-auto form-inline">
 {% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
 <a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
   <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for a in courses %}
+          {% for a in course %}
                 {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
                   {% comment %} style="pointer-events: none"/ {% endcomment %}
                   {% comment %} {% if user.is_authenticated %} {% endcomment %}
@@ -58,20 +58,21 @@
                       {% endfor %}
                     </td>
                     {% for item, values in per.items %}
-                    {% if item == a.id %}
-                    {% if user.id == a.author.id %}
-                    <td>
-                      
-                      <div class="progress">
+                      {% if item == a.id %}
+                        {% if user.id == a.author.id %}
+                          <td>
+                            
+                        <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
-                      </div>
+                      </div> 
                       
                     </td>
                     {% else %}
                     <td>
+                      
                       <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
-                      </div>
+                      </div> 
                     </td>
                     {% endif %}
                     {% endif %}
@@ -139,14 +140,32 @@
       {% endfor %}
     </tbody>
       </table>
-      {% if courses.has_previous %}
+      {% comment %} {% if course.has_previous %}
         <a href="?page=1">&laquo First</a>
-        <a href="?page={{courses.previous_page_number}}">Previous</a>
+        <a href="?page={{course.previous_page_number}}">Previous</a>
       {% endif %}
-      Page {{courses.number}} of {{courses.paginator.num_pages}}
-      {% if courses.has_next %}
-      <a href="?page={{courses.next_page_number}}">Next</a>
-      <a href="?page={{courses.paginator.num_pages}}">Last &raquo</a>
-      {% endif %}
+      Page {{course.number}} of {{course.paginator.num_pages}}
+      {% if course.has_next %}
+      <a href="?page={{course.next_page_number}}">Next</a>
+      <a href="?page={{course.paginator.num_pages}}">Last &raquo</a>
+      {% endif %} {% endcomment %}
+      {% if is_paginated %}
+<ul class="pagination">
+{% if page_obj.has_previous %}
+    <li>
+        <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+    </li>
+{% endif %}
+    <li class="">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+    </li>
+{% if page_obj.has_next %}
+    <li>
+        <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+    </li>
+{% endif %}
+</ul>
+
+{% endif %}
       {% endblock body %}
     
