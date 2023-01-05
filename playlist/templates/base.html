@@ -72,13 +72,11 @@
 {% if user.is_authenticated %}
 
 <ul class="navbar-nav ml-auto">
-  {% comment %} <a href="/admin" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Admin Panel </a> {% endcomment %}
-  <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#courseModal">
+  
+  <a href="/add" role="button" class="btn btn-success mr-2">
     Add Course
-  </button>
-  {% comment %} {% block uploadNav %}{% endblock uploadNav %} {% endcomment %}
-  {% block nav %}{% endblock nav %}
-  {% block uploadNav %}{% endblock uploadNav %}
+  </a>
+  
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
    Welcome {{request.user}}
@@ -106,45 +104,7 @@
             </button>
           </div>
       {% endfor %}
-
-
-
- 
-      {% block body %} 
-       {% endblock body %}
-{% comment %} <!--Add Course Modal --> {% endcomment %}
-<div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="courseModalTitle">Add Course Here</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="course" method="post"> 
-              {% csrf_token %}
-    
-    <div class="form-group">
-      <label for="link">Video Link</label>
-      <input type="text" class="form-control" id="link" name="link" required>
-      <label class="my-2" for="tag">Tag</label>
-      <input type="text" class="form-control" id="tag" name="tag" required>
-      <div class="mb-3 form-check my-2">
-    <input type="checkbox" class="form-check-input" id="public" name="public">
-    <label class="form-check-label" for="public">IsPublic</label>
-  </div>
-
-    </div>
-    
-          <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
-</div>
-</div>
-       </div>
-       {% block upload %}{% endblock upload %}
+ {% block body %} {% endblock body %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

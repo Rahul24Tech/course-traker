@@ -1,18 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
-{% block nav %} 
-<div class="ml-auto form-inline">
-{% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
-<a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
-  <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
-</div>
-{% endblock nav %}
 
 {% block body %}
 
     <center class="my-2"><h1>List of Playlist</h1></center>
     <div class="ml-auto my-2">
-  
+      <a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
+      <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
       <a href="download" role="button" class="btn btn-success mr-2">Sample Excel</a>
     </div>
     <table class="table">
@@ -27,9 +21,6 @@
         </thead>
         <tbody>
           {% for a in course %}
-                {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
-                  {% comment %} style="pointer-events: none"/ {% endcomment %}
-                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
                     {% if a.public and user.is_authenticated %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
@@ -77,8 +68,6 @@
                     {% endif %}
                     {% endif %}
                     {% endfor %}
-                    {% comment %} {% endif %} {% endcomment %}
-                      {% comment %} {% endif %} {% endcomment %}
                   </tr>
                     {% else %}
                     
