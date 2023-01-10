@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from django.utils import timezone
+from django.urls import reverse
 
 # Create your models here.
 
@@ -50,6 +51,26 @@ class PlaylistItem(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null="true")
     status = models.CharField(max_length=50, default="Yet To Start")
     playlist_title = models.CharField(max_length=100)
+    
 
     def __str__(self):
         return self.list_item
+    
+    
+class Profile(models.Model):
+    OPTIONS = (
+        ("H", "Hours"),
+        ("M", "Minutes"),
+        ("S", "Seconds"),
+    )
+        
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE) 
+    bio = models.TextField()
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="images/Profile/")
+    website_url = models.CharField(max_length=255, null=True, blank=True)
+    facebook_url = models.CharField(max_length=255, null=True, blank=True)
+    time_preference = models.CharField(max_length=100, choices=OPTIONS)
+    
+    def get_absolute_url(self):
+        return reverse("home")
+    

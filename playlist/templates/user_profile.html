@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load time_left %}
+{% block title %}Profile Page{% endblock title %}
+{% block body %}
+    <h1>User Profile...</h1>
+    <a href="{% url 'edit_profile' %}" role="button" class="btn btn-success mr-2">Edit Settings</a>
+  <a href="{% url 'edit_profile_page' user.profile.id %}" role="button" class="btn btn-success mr-2">Edit Profile Page</a>
+        <div class="card mb-3">
+            <div class="row g-0">
+              <div class="col-md-2">
+                {% if page_user.profile_pic.url %}
+                <img src="{{page_user.profile_pic.url}}" width="200" height="200">
+                {% else %}
+                <img src="" width="200" height="200">
+                {% endif %}
+              </div>
+              <div class="col-md-10">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    {{page_user.first_name}}
+                    {{page_user.last_name}}
+                  </h5>
+                  <p class="card-text"><small class="text-muted">
+                    {% comment %} <a href="{% url 'show_profile' course.author.profile.id %}"></a> {% endcomment %}
+                    {% if page_user.website_url %}
+                     | <a href="{{page_user.website_url}}">Website</a>
+                    {% endif %}
+                    {% if page_user.facebook_url %}
+                      | <a href="{{page_user.facebook_url}}">Facebook</a> 
+                    {% endif %}
+                  </small></p>
+                  <p class="card-text">{{page_user.bio}}</p>
+                  {% gettime %}
+                  {% if page_user.time_preference == "H" %}
+                    {% for title,time in Hours_title.items %}
+                        <p>{{title}} - {{time}}</p> 
+                    {% endfor %} 
+                  {% elif page_user.time_preference == "M" %}
+                    {% for title,time in Minute_title.items %}
+                      <p>{{title}} - {{time}}</p> 
+                    {% endfor %} 
+                  {% elif page_user.time_preference == "S" %}
+                    {% for title,time in Second_title.items %}
+                      <p>{{title}} - {{time}}</p> 
+                    {% endfor %}
+                  {% endif %}
+                  {% comment %} {% for title,time in time.items %} {% endcomment %}
+                  {% comment %} <p>{{ x}}</p> {% endcomment %}
+                  {% comment %} {% endfor %} {% endcomment %}
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          
+{% endblock  %}
+

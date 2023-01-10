@@ -1,23 +1,31 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from taggit.models import Tag
 from django.http import HttpResponse
-from django.views import View
+from django.views import View, generic
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView
+from django import template as tt
 
 
 from .models import *
-from .forms import CreateUserForm, ContactForm, AddCourseForm
+from .forms import CreateUserForm, ContactForm, AddCourseForm, EditProfileForm, ProfilePageForm, TimePreferenceForm
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 import youtube_dl
 import openpyxl
 import calendar
 import time
+# import datetime
+import pytz
 from datetime import datetime
 from copy import deepcopy
 
@@ -55,7 +63,10 @@ class Main(ListView):
         except EmptyPage:
             course = paginator.page(paginator.num_pages)
 
+        
         course_id = []
+        # import pdb
+        # pdb.set_trace()
         course = Course.objects.all()
         for item in course.iterator():
             course_list = Course.objects.get(id=item.id)
@@ -63,8 +74,8 @@ class Main(ListView):
         progress = {}
         for data in course_id:
             global_count = 0
-            list_total = PlaylistItem.objects.filter(playlist_title=data.title).count()
-            list_item = PlaylistItem.objects.filter(playlist_title=data.title)
+            list_total = PlaylistItem.objects.filter(playlist_title=data.title).filter(author=data.author).count()
+            list_item = PlaylistItem.objects.filter(playlist_title=data.title).filter(author=data.author)
             for title in list_item.iterator():
                 if title.status == "Completed":
                     global_count = global_count + 1
@@ -75,7 +86,9 @@ class Main(ListView):
                     percentage = 100 * float(total) / float(list_total)
                 progress[data.id] = round(percentage)
             self.request.session["progress"] = progress
-
+        # import pdb
+        # pdb.set_trace()
+        print(progress)
         context["course"] = paginator.page(context["page_obj"].number)
         context["per"] = progress
         return context
@@ -109,6 +122,8 @@ class AddCourse(FormView):
             playlist_info.append(video_url.copy())
 
         form.instance.title = result.get("title")
+        # import pdb
+        # pdb.set_trace()
         form.instance.author = self.request.user
         obj = form.save()
         obj.tags.add(*tag)
@@ -121,6 +136,7 @@ class AddCourse(FormView):
                 time=duration,
                 playlist_title=result.get("title"),
                 link=playlist_url,
+                author=self.request.user
             )
             list_store.save()
         form.send_email()
@@ -168,7 +184,7 @@ class Listing(View):
         list_item = PlaylistItem.objects.filter(playlist_title=course_list.title)
         request.session["id"] = id
 
-        course_info = {"videoDetail": list_item, "id": id, "overall": status_data}
+        course_info = {"videoDetail": list_item, "id": id, "overall": status_data, "title": course_list.title}
 
         return render(request, "List.html", course_info)
 
@@ -302,14 +318,28 @@ class Clone(View):
     """
     This class is used to make clone of public course of other user.
     """
-
+    
     def get(self, request, id):
+        # import pdb
+        # pdb.set_trace()
         course = Course.objects.get(id=id)
         if self.request.user.id != course.author.id and course.public:
             old_obj = deepcopy(course)
+            playlist = PlaylistItem.objects.filter(playlist_title=old_obj.title)
+            old_playlist = deepcopy(playlist)
+            
             old_tag = old_obj.tags.all()
             course.id = None
             course.author = self.request.user
+            for item in old_playlist:
+                PlaylistItem.objects.create(
+                    list_item=item.list_item,
+                    time=item.time,
+                    playlist_title=old_obj.title,
+                    link=item.link,
+                    status="Yet To Start",
+                    author=self.request.user
+                )
             course.save()
             for tag in old_tag.iterator():
                 course.tags.add(tag.name)
@@ -451,3 +481,59 @@ class Download(View):
             response["Content-Disposition"] = "attachment; filename=" + filename
             response["Content-Type"] = "application/vnd.ms-excel; charset=utf-16"
             return response
+
+
+class UserEditView(generic.UpdateView):
+    form_class = EditProfileForm
+    template_name = "edit_profile.html"
+    success_url = "/" 
+    
+    def get_object(self):
+        return self.request.user
+    
+    
+class PasswordsChangeView(PasswordChangeView):
+    form_class = PasswordChangeForm
+    success_url = "/"
+    
+    
+class ShowProfilePageView(DetailView):
+    model = Profile
+    template_name = "user_profile.html"
+    
+    def get_context_data(self, *args, **kwargs):
+        # users = Profile.objects.all()
+        context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
+        
+        pages_user = get_object_or_404(Profile, id=self.kwargs['pk'])
+        context["page_user"] = pages_user
+        return context   
+    
+    
+class EditProfilePageView(generic.UpdateView):
+    model = Profile
+    fields = ['bio', 'profile_pic', 'website_url', 'facebook_url', 'time_preference']
+    template_name = "edit_profile_page.html"
+    success_url = "/"
+    
+    
+class CreateProfilePage(CreateView):
+    model = Profile
+    form_class = ProfilePageForm
+    template_name = "create_user_profile.html"
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    
+# class TimePreferencePage(View):
+#     def post(self, request):
+#         form = TimePreferenceForm(request.POST)
+#         if form.is_valid():
+#             time = form.cleaned_data.get('time_preference')
+#             profile = Profile(time_preference=time)
+#             profile.save()
+#             # do something with your results
+#         else:
+#             form = TimePreferenceForm

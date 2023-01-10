@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from .views import *
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -21,4 +22,9 @@ urlpatterns = [
     path("course_csv", CourseCsv.as_view(), name="course_csv"),
     path("upload", Upload.as_view(), name="upload"),
     path("download", Download.as_view(), name="download"),
+    path("edit_profile", UserEditView.as_view(), name="edit_profile"),
+    path("password/", PasswordsChangeView.as_view(template_name="change-password.html")),
+    path("<int:pk>/profile", ShowProfilePageView.as_view(), name="show_profile"),
+    path("<int:pk>/edit_profile_page", EditProfilePageView.as_view(), name="edit_profile_page"),
+    path("create_profile", CreateProfilePage.as_view(), name="create_profile")
 ]

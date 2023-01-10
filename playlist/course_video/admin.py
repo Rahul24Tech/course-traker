@@ -101,3 +101,8 @@ class PlaylistItemAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ("bio", )

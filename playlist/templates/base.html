@@ -35,7 +35,31 @@
             <li class="nav-item {% block blogactive %}  {% endblock blogactive %} ">
               <a class="nav-link" href="/course">Course</a>
             </li>
+            {% if user.profile.id %}
+            <li class="nav-item {% block profileactive %}  {% endblock profileactive %} ">
+              <a class="nav-link" href="{% url 'show_profile' user.profile.id %}">Profile</a>
+            </li>
+            {% else %}
             
+              <a class="dropdown-item" href="{% url 'create_profile' %}">Create Profile Page</a>
+            </li>
+            {% endif %}
+            {% comment %} <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Profile
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit Settings</a></li>
+                  {% if user.profile.id %}
+                  <li><a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li>
+                  <li><a class="dropdown-item" href="{% url 'show_profile' user.profile.id %}">Show Profile Page</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="{% url 'create_profile' %}">Create Profile Page</a></li>
+                  {% endif %}
+                  
+                </ul>
+              </li> {% endcomment %}
+      
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="/contact">Contact</a>
@@ -43,7 +67,7 @@
             <li class="nav-item">
               <a class="nav-link" href="/course">Course</a>
             </li>
-           
+            
             {% endif %}
             
           </ul>
@@ -82,6 +106,7 @@
    Welcome {{request.user}}
   </a>
   <div class="dropdown-menu aria-labelledby="navbarDropdown">
+    {% comment %} <a class="dropdown-item" href="edit_profile">Edit Profile</a> {% endcomment %}
     <a class="dropdown-item" href="logout">Logout</a>
   </div>
 </li>
