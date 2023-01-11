@@ -21,7 +21,6 @@
                     {{page_user.last_name}}
                   </h5>
                   <p class="card-text"><small class="text-muted">
-                    {% comment %} <a href="{% url 'show_profile' course.author.profile.id %}"></a> {% endcomment %}
                     {% if page_user.website_url %}
                      | <a href="{{page_user.website_url}}">Website</a>
                     {% endif %}
@@ -30,24 +29,16 @@
                     {% endif %}
                   </small></p>
                   <p class="card-text">{{page_user.bio}}</p>
-                  {% gettime %}
-                  {% if page_user.time_preference == "H" %}
-                    {% for title,time in Hours_title.items %}
-                        <p>{{title}} - {{time}}</p> 
-                    {% endfor %} 
-                  {% elif page_user.time_preference == "M" %}
-                    {% for title,time in Minute_title.items %}
-                      <p>{{title}} - {{time}}</p> 
-                    {% endfor %} 
-                  {% elif page_user.time_preference == "S" %}
-                    {% for title,time in Second_title.items %}
-                      <p>{{title}} - {{time}}</p> 
-                    {% endfor %}
-                  {% endif %}
-                  {% comment %} {% for title,time in time.items %} {% endcomment %}
-                  {% comment %} <p>{{ x}}</p> {% endcomment %}
-                  {% comment %} {% endfor %} {% endcomment %}
-                  
+                  {% get_time_in_sec as time_left %}
+                  {% for item, value in time_left.items %}
+                      {% if page_user.time_preference == "H" %}
+                      <p> {{item}} - {{ value | time_conversion:"H" }} hr left </p>
+                      {% elif page_user.time_preference == "M" %}
+                      <p> {{item}} - {{ value | time_conversion:"M" }} minutes left </p>
+                      {% elif page_user.time_preference == "S" %}
+                      <p> {{item}} - {{ value | time_conversion:"S" }} seconds left </p>
+                      {% endif %}
+                  {% endfor %}
                 </div>
               </div>
             </div>

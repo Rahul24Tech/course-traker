@@ -16,7 +16,14 @@ from django import template as tt
 
 
 from .models import *
-from .forms import CreateUserForm, ContactForm, AddCourseForm, EditProfileForm, ProfilePageForm, TimePreferenceForm
+from .forms import (
+    CreateUserForm,
+    ContactForm,
+    AddCourseForm,
+    EditProfileForm,
+    ProfilePageForm,
+    TimePreferenceForm,
+)
 from django.core.paginator import Paginator
 from django.db.models import Count
 
@@ -24,6 +31,7 @@ import youtube_dl
 import openpyxl
 import calendar
 import time
+
 # import datetime
 import pytz
 from datetime import datetime
@@ -49,7 +57,7 @@ class Main(ListView):
     """
 
     model = Course
-    paginate_by = 4  # add this
+    paginate_by = 4
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
@@ -63,19 +71,18 @@ class Main(ListView):
         except EmptyPage:
             course = paginator.page(paginator.num_pages)
 
-        
         course_id = []
-        # import pdb
-        # pdb.set_trace()
         course = Course.objects.all()
+        profile = Profile.objects.get(user=self.request.user)
         for item in course.iterator():
             course_list = Course.objects.get(id=item.id)
             course_id.append(course_list)
         progress = {}
         for data in course_id:
             global_count = 0
-            list_total = PlaylistItem.objects.filter(playlist_title=data.title).filter(author=data.author).count()
-            list_item = PlaylistItem.objects.filter(playlist_title=data.title).filter(author=data.author)
+            list_item = PlaylistItem.objects.filter(playlist=data.id).filter(
+                author=data.author
+            )
             for title in list_item.iterator():
                 if title.status == "Completed":
                     global_count = global_count + 1
@@ -83,14 +90,13 @@ class Main(ListView):
                     percentage = 0
                 else:
                     total = global_count
-                    percentage = 100 * float(total) / float(list_total)
+                    percentage = 100 * float(total) / float(list_item.count())
                 progress[data.id] = round(percentage)
             self.request.session["progress"] = progress
-        # import pdb
-        # pdb.set_trace()
         print(progress)
         context["course"] = paginator.page(context["page_obj"].number)
         context["per"] = progress
+        context["profile"] = profile
         return context
 
 
@@ -122,11 +128,11 @@ class AddCourse(FormView):
             playlist_info.append(video_url.copy())
 
         form.instance.title = result.get("title")
-        # import pdb
-        # pdb.set_trace()
+
         form.instance.author = self.request.user
         obj = form.save()
         obj.tags.add(*tag)
+        cource = Course.objects.get(id=obj.id)
         for i in playlist_info:
             title = i.get("title")
             duration = i.get("duration")
@@ -134,12 +140,11 @@ class AddCourse(FormView):
             list_store = PlaylistItem(
                 list_item=title,
                 time=duration,
-                playlist_title=result.get("title"),
                 link=playlist_url,
-                author=self.request.user
+                playlist=cource,
+                author=self.request.user,
             )
             list_store.save()
-        form.send_email()
         messages.success(
             self.request, "Sent Email Successfully...Check your mail please"
         )
@@ -181,10 +186,15 @@ class Listing(View):
     def get(self, request, id):
         status_data = ["Yet to Start", "In Progress", "On Hold", "Completed"]
         course_list = Course.objects.get(id=id)
-        list_item = PlaylistItem.objects.filter(playlist_title=course_list.title)
+        list_item = PlaylistItem.objects.filter(playlist=course_list.id)
         request.session["id"] = id
 
-        course_info = {"videoDetail": list_item, "id": id, "overall": status_data, "title": course_list.title}
+        course_info = {
+            "videoDetail": list_item,
+            "id": id,
+            "overall": status_data,
+            "title": course_list.title,
+        }
 
         return render(request, "List.html", course_info)
 
@@ -285,9 +295,7 @@ class Editing(View):
         title = request.POST["title"]
         course.title = title
         course.save(update_fields=["title"])
-        PlaylistItem.objects.filter(playlist_title=string_var).update(
-            playlist_title=course.title
-        )
+        PlaylistItem.objects.filter(playlist=course.id).update(playlist=course.id)
         messages.success(request, "Successfully updated title")
         return redirect("/course")
 
@@ -318,31 +326,32 @@ class Clone(View):
     """
     This class is used to make clone of public course of other user.
     """
-    
+
     def get(self, request, id):
         # import pdb
         # pdb.set_trace()
         course = Course.objects.get(id=id)
         if self.request.user.id != course.author.id and course.public:
             old_obj = deepcopy(course)
-            playlist = PlaylistItem.objects.filter(playlist_title=old_obj.title)
+            playlist = PlaylistItem.objects.filter(playlist=old_obj.id)
             old_playlist = deepcopy(playlist)
-            
+
             old_tag = old_obj.tags.all()
             course.id = None
             course.author = self.request.user
+
+            course.save()
+            for tag in old_tag.iterator():
+                course.tags.add(tag.name)
             for item in old_playlist:
                 PlaylistItem.objects.create(
                     list_item=item.list_item,
                     time=item.time,
-                    playlist_title=old_obj.title,
+                    playlist=course,
                     link=item.link,
                     status="Yet To Start",
-                    author=self.request.user
+                    author=self.request.user,
                 )
-            course.save()
-            for tag in old_tag.iterator():
-                course.tags.add(tag.name)
         return redirect("main")
 
 
@@ -453,7 +462,7 @@ class Upload(View):
                         list_store = PlaylistItem(
                             list_item=title,
                             time=duration,
-                            playlist_title=result.get("title"),
+                            playlist=result.get("title"),
                             link=playlist_url,
                         )
                         list_store.save()
@@ -484,56 +493,56 @@ class Download(View):
 
 
 class UserEditView(generic.UpdateView):
+    """This class is used to edit users setting"""
+
     form_class = EditProfileForm
     template_name = "edit_profile.html"
-    success_url = "/" 
-    
+    success_url = "/"
+
     def get_object(self):
         return self.request.user
-    
-    
-class PasswordsChangeView(PasswordChangeView):
-    form_class = PasswordChangeForm
-    success_url = "/"
-    
-    
+
+
 class ShowProfilePageView(DetailView):
+    """
+    This class is used to view profile page.
+
+    return - context of profile data and course_author data
+    """
+
     model = Profile
     template_name = "user_profile.html"
-    
+
     def get_context_data(self, *args, **kwargs):
-        # users = Profile.objects.all()
+
         context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
-        
-        pages_user = get_object_or_404(Profile, id=self.kwargs['pk'])
+        pages_user = get_object_or_404(Profile, id=self.kwargs["pk"])
+        course_title = Course.objects.filter(author=pages_user.user)
         context["page_user"] = pages_user
-        return context   
-    
-    
+        context["course_title"] = course_title
+        return context
+
+
 class EditProfilePageView(generic.UpdateView):
+    """
+    This class is used to edit profile page
+    """
+
     model = Profile
-    fields = ['bio', 'profile_pic', 'website_url', 'facebook_url', 'time_preference']
+    fields = ["bio", "profile_pic", "website_url", "facebook_url", "time_preference"]
     template_name = "edit_profile_page.html"
     success_url = "/"
-    
-    
+
+
 class CreateProfilePage(CreateView):
+    """
+    This class is used to profile page of user.
+    """
+
     model = Profile
     form_class = ProfilePageForm
     template_name = "create_user_profile.html"
-    
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-    
-    
-# class TimePreferencePage(View):
-#     def post(self, request):
-#         form = TimePreferenceForm(request.POST)
-#         if form.is_valid():
-#             time = form.cleaned_data.get('time_preference')
-#             profile = Profile(time_preference=time)
-#             profile.save()
-#             # do something with your results
-#         else:
-#             form = TimePreferenceForm

@@ -12,7 +12,6 @@
             <form enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {{form.as_p}}
-                {% gettime %}
                 <button class="btn btn-secondary">Create Profile Page</button>
             </form>
         </div>

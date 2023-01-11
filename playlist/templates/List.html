@@ -25,7 +25,6 @@
               <div class="card-body">
                 <form action="{% url 'getstatus' dict.id %}" method="post">
                   {% csrf_token %}
-                  {% comment %} <label for="choice">Choice</label> {% endcomment %}
                   <select name="choice" class="form-control">
                     {% if dict.status == "Yet to Start" %}
                     <option value="Yet to Start" selected>Yet to Start</option>

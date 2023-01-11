@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Course{% endblock title %}
+{% load time_left %}
 {% block nav %} 
 <div class="ml-auto form-inline">
 {% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
@@ -23,13 +24,11 @@
             <th scope="col">Action</th>
             <th scope="col">Tag</th>
             <th scope="col">Progress</th>
+            <th scope="col">Time Left</th>
           </tr>
         </thead>
         <tbody>
           {% for a in course %}
-                {% comment %} <p class="tag">Tag: {{a.tags.all|join:","}}  {% endcomment %}
-                  {% comment %} style="pointer-events: none"/ {% endcomment %}
-                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
                     {% if a.public and user.is_authenticated %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
@@ -77,9 +76,15 @@
                     {% endif %}
                     {% endif %}
                     {% endfor %}
-                    {% comment %} {% endif %} {% endcomment %}
-                      {% comment %} {% endif %} {% endcomment %}
-                  </tr>
+                    {% if user.is_authenticated and profile.time_preference == "H" %}
+                    
+                      <td>{{ a.time_left | time_conversion:"H" }} hr left</td>
+                    {% elif user.is_authenticated and profile.time_preference == "M" %}
+                      <td>{{ a.time_left | time_conversion:"M" }} min left</td>
+                    {% else %}
+                      <td>{{ a.time_left | time_conversion:"S" }} sec left</td>
+                    {% endif %}
+                    </tr>
                     {% else %}
                     
                     {% if user.id == a.author.id %}
@@ -93,13 +98,6 @@
                             <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
                             </a>
                         </td>
-
-                      {% comment %} {% else %}
-                        <td>
-                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
-                          
-                        </td>
-                      {% endif %} {% endcomment %}
                       <td>
                       {% for tag in a.tags.all %}
                         <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
@@ -126,29 +124,23 @@
                     
                     {% else %}
                     <tr>
+                      
                     </tr>
                     {% endif %}
+                    {% if user.is_authenticated and profile.time_preference == "H" %}
                     
-                        {% comment %} {% endfor %} {% endcomment %}
+                      <td>{{ a.time_left | time_conversion:"H" }} hr left</td>
+                    {% elif user.is_authenticated and profile.time_preference == "M" %}
+                      <td>{{ a.time_left | time_conversion:"M" }} min left</td>
+                    {% else %}
+                      <td>{{ a.time_left | time_conversion:"S" }} sec left</td>
+                    {% endif %}
+                  </tr>
                        
                     {% endif %}
-                  {% comment %} {% endif %} {% endcomment %}
-                  
-                
-      
-      
       {% endfor %}
     </tbody>
       </table>
-      {% comment %} {% if course.has_previous %}
-        <a href="?page=1">&laquo First</a>
-        <a href="?page={{course.previous_page_number}}">Previous</a>
-      {% endif %}
-      Page {{course.number}} of {{course.paginator.num_pages}}
-      {% if course.has_next %}
-      <a href="?page={{course.next_page_number}}">Next</a>
-      <a href="?page={{course.paginator.num_pages}}">Last &raquo</a>
-      {% endif %} {% endcomment %}
       {% if is_paginated %}
 <ul class="pagination">
 {% if page_obj.has_previous %}
