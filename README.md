@@ -36,9 +36,10 @@ Run Test:
  1.python3 manage.py runserver:- this will run at port:8000
  
 Features:
-  1. Added django-allauth social login.
-  2. email notification using celery on course addition on TechHub.
-  3. Customize the admin interface.
+  1. Added Profile page 
+  2. Added edit settings of logged in user.
+  3. User can update thier profile (EditProfilePageView)
+  4. Added a new field Time Left field in course table and time_preference field in Profile model.
 
 
  
