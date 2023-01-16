@@ -16,6 +16,12 @@ class Course(models.Model):
     public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    favourites = models.ManyToManyField(
+        User, related_name="favourite", blank=True, default=None
+    )
+    watch_later = models.ManyToManyField(
+        User, related_name="watch_later", blank=True, default=None
+    )
 
     def __str__(self):
         return self.title
@@ -54,6 +60,9 @@ class PlaylistItem(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null="true")
     status = models.CharField(max_length=50, default="Yet To Start")
     playlist = models.ForeignKey(Course, on_delete=models.CASCADE)
+    watch_later_playlist = models.ManyToManyField(
+        User, related_name="watch_later_playlist", blank=True, default=None
+    )
 
     def __str__(self):
         return self.list_item
