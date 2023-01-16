@@ -36,10 +36,10 @@ Run Test:
  1.python3 manage.py runserver:- this will run at port:8000
  
 Features:
-  1. Added Profile page 
-  2. Added edit settings of logged in user.
-  3. User can update thier profile (EditProfilePageView)
-  4. Added a new field Time Left field in course table and time_preference field in Profile model.
+  1. Added Favourite action to save particular course. 
+  2. Added watch_later action to watch video later(some other days) of particular course.
+  3. Added watch_later for particular playlist of a course i.e:- watch_later_playlist
+  4. Added delete action for all favourite, watch_late, watch_later_playlist).
 
 
  

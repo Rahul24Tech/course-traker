@@ -1,4 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from django.shortcuts import (
+    render,
+    redirect,
+    HttpResponse,
+    get_object_or_404,
+    HttpResponseRedirect,
+)
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from taggit.models import Tag
@@ -80,6 +86,8 @@ class Main(ListView):
         progress = {}
         for data in course_id:
             global_count = 0
+            # import pdb
+            # pdb.set_trace()
             list_item = PlaylistItem.objects.filter(playlist=data.id).filter(
                 author=data.author
             )
@@ -118,6 +126,8 @@ class AddCourse(FormView):
             result = ydl.extract_info(
                 link, download=False  # We just want to extract the info
             )
+        # import pdb
+        # pdb.set_trace()
         playlist_info = []
         for video in result["entries"]:
             video_url = dict(
@@ -278,7 +288,7 @@ class Search(View):
     """
 
     def get(self, request):
-        query = request.GET["query"]
+        query = self.request.GET["query"]
         allCourse = Course.objects.filter(title__icontains=query)
         params = {"allCourse": allCourse}
         return render(request, "search.html", params)
@@ -546,3 +556,143 @@ class CreateProfilePage(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class FavouriteAdd(View):
+    """
+    This class used to add favourite course for particular user.
+    
+    Args:
+        id(int)- It is id of particular course to add as favourite
+        
+    return: First filter the favourite field if exist then it remove the already present course
+            and if favourite field is empty then add the course. 
+    """
+    def get(self, request, id):
+        course = get_object_or_404(Course, id=id)
+        if course.favourites.filter(id=self.request.user.id).exists():
+            course.favourites.remove(self.request.user)
+            messages.success(
+                self.request, "Course successfully removed from Favourite list"
+            )
+        else:
+            course.favourites.add(self.request.user)
+            messages.success(
+                self.request, "Course successfully added to Favourite list"
+            )
+
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+
+class FavouriteList(ListView):
+    """
+    This class is used to view all favourite listed course.
+    
+    return: It return all data which is in favourite field.
+    """
+    model = Course
+    paginate_by = 4
+    template_name = "favourite.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(FavouriteList, self).get_context_data(**kwargs)
+        favourite = Course.objects.filter(favourites=self.request.user)
+        context["favourite"] = favourite
+        return context
+
+
+class WatchLaterCourseAdd(View):
+    """
+    This class is used to add course to watch later section.
+    
+    Args:
+        id(int): First filter the watch_later field if exist then it remove the already present course
+            and if watch_later field is empty then add the course to watch later section. 
+    """
+    def get(self, request, id):
+        course = get_object_or_404(Course, id=id)
+        if course.watch_later.filter(id=self.request.user.id).exists():
+            course.watch_later.remove(self.request.user)
+            messages.success(
+                self.request, "Course successfully removed from Watch Later list"
+            )
+        else:
+            course.watch_later.add(self.request.user)
+            messages.success(
+                self.request, "Course successfully added to Watch Later list"
+            )
+
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+
+class WatchLaterCourseList(ListView):
+    """
+    This class is used to view all course present in watch_later field.
+    
+    return:- It return all data of watch_later field.
+    """
+    model = Course
+    paginate_by = 4
+    template_name = "watch_later_course.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(WatchLaterCourseList, self).get_context_data(**kwargs)
+        watch_later = Course.objects.filter(watch_later=self.request.user)
+        context["watch_later"] = watch_later
+        return context
+
+
+class WatchLaterPlaylistItemAdd(View):
+    """
+    This class is used to add particular playlist video in watch_later section.
+    
+    Args:
+        id(int): It is id of particular playlist of a course 
+    """
+    def get(self, request, id):
+        playlist = get_object_or_404(PlaylistItem, id=id)
+
+        if playlist.watch_later_playlist.filter(id=self.request.user.id).exists():
+            playlist.watch_later_playlist.remove(self.request.user)
+            messages.success(
+                self.request, "playlist successfully removed from Watch Later list"
+            )
+        else:
+            playlist.watch_later_playlist.add(self.request.user)
+            messages.success(
+                self.request, "playlist successfully added to Watch Later list"
+            )
+
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+
+
+class WatchLaterPlaylistItemList(ListView):
+    """
+    This class is used to view all playlist in watch_later_playlist section.
+    
+    return: It return playlist_info contains(title, duration, thumbnail, webpage_url).
+    """
+    model = PlaylistItem
+    template_name = "watch_later_playlist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(WatchLaterPlaylistItemList, self).get_context_data(**kwargs)
+        watch_later = PlaylistItem.objects.filter(
+            watch_later_playlist=self.request.user
+        )
+        playlist_info = []
+        for item in watch_later:
+            ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
+            with ydl:
+                result = ydl.extract_info(
+                    item.link, download=False  # We just want to extract the info
+                )
+            video_url = dict(
+                (k, result[k])
+                for k in ["title", "duration", "webpage_url", "thumbnail"]
+                if k in result
+            )
+            video_url["id"] = item.id
+            playlist_info.append(video_url)
+        context["playlist_info"] = playlist_info
+        return context

@@ -75,7 +75,11 @@
   </a>
   <div class="dropdown-menu aria-labelledby="navbarDropdown">
     {% comment %} <a class="dropdown-item" href="edit_profile">Edit Profile</a> {% endcomment %}
+    <a class="dropdown-item" href="{% url 'profile_favourite' %}">Saved Course</a>
+    <a class="dropdown-item" href="{% url 'profile_watch_later' %}">Watch Later</a>
+    <a class="dropdown-item" href="{% url 'profile_watch_later_playlist' %}">Watch Later Playlist</a>
     <a class="dropdown-item" href="logout">Logout</a>
+
   </div>
 </li>
 </ul>
