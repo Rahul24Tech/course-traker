@@ -40,7 +40,12 @@
                           <a href="{% url 'editing' a.id %}">
                           <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
                           </a>
-
+                          <a href={% url 'watch_later_add' a.id %}>
+                            <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                          </a>
+                          <a href={% url 'favourite_add' a.id %}>
+                            <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
+                          </a>
                         </td>
                         
                         {% else %}
@@ -48,7 +53,12 @@
                           <a  target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
                           <a href="{% url 'clone' a.id %}">
                             <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="" class="img-small" width="20" height="20"></a>
-                          
+                            <a href={% url 'watch_later_add' a.id %}>
+                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
+                            <a href={% url 'favourite_add' a.id %}>
+                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
                         </td>
                         {% endif %}
                         <td>
@@ -96,6 +106,12 @@
                           <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
                           <a href="{% url 'editing' a.id %}">
                             <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
+                            <a href={% url 'watch_later_add' a.id %}>
+                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                            </a>
+                            <a href={% url 'favourite_add' a.id %}>
+                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
                             </a>
                         </td>
                       <td>
