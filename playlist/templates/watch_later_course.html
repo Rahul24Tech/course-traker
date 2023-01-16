@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Watch Later Course{% endblock title %}
+{% load time_left %}
+{% block body %}
+
+    <center class="my-2"><h1>Users saved watch later course</h1></center>
+    <center><p class="lead text-muted">Here you can remove or view the watch later course you have added.</p></center>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">S.no</th>
+            <th scope="col">Title</th>
+            <th scope="col">Action</th>
+            <th scope="col">Time Left</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for course in watch_later %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td><a  style="color: inherit;" href="{% url 'listing' course.id %}">{{course.title}}</a></td>
+                <td>
+                    <a target="_blank" href={{course.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                    <a href={% url 'watch_later_add' course.id %}><img src="   https://cdn-icons-png.flaticon.com/512/3096/3096687.png " alt="" title="" class="img-small" width="20" height="20"></a>
+                </td>
+                {% if user.is_authenticated and profile.time_preference == "H" %}
+                    <td>{{ course.time_left | time_conversion:"H" }} hr left</td>
+                {% elif user.is_authenticated and profile.time_preference == "M" %}
+                    <td>{{ course.time_left | time_conversion:"M" }} min left</td>
+                {% else %}
+                    <td>{{ course.time_left | time_conversion:"S" }} sec left</td>
+                {% endif %}            
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% endblock body %}
