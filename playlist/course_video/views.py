@@ -562,14 +562,14 @@ class CreateProfilePage(CreateView):
 class FavouriteAdd(View):
     """
     This class used to add favourite course for particular user.
-    
+
     Args:
         id(int)- It is id of particular course to add as favourite
-        
+
     return: First filter the favourite field if exist then it remove the already present course
-            and if favourite field is empty then add the course. 
+            and if favourite field is empty then add the course.
     """
-    
+
     def get(self, request, id):
         course = get_object_or_404(Course, id=id)
         if course.favourites.filter(id=self.request.user.id).exists():
@@ -584,29 +584,31 @@ class FavouriteAdd(View):
             )
 
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    
-    def post(self, request,id):
-        if request.POST.get('delete'):
+
+    def post(self, request, id):
+        if request.POST.get("delete"):
             selected_course = Course.objects.filter(
-            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+                pk__in=list(map(int, self.request.POST.getlist("selected[]")))
+            )
             for course in selected_course:
                 if course.favourites.filter(id=self.request.user.id).exists():
                     course.favourites.remove(self.request.user)
             messages.success(
-                        self.request, "Course successfully removed from Favourite list"
-                    )
+                self.request, "Course successfully removed from Favourite list"
+            )
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 class FavouriteList(ListView):
     """
     This class is used to view all favourite listed course.
-    
+
     return: It return all data which is in favourite field.
     """
+
     model = Course
     template_name = "favourite.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super(FavouriteList, self).get_context_data(**kwargs)
         favourite = Course.objects.filter(favourites=self.request.user)
@@ -617,11 +619,12 @@ class FavouriteList(ListView):
 class WatchLaterCourseAdd(View):
     """
     This class is used to add course to watch later section.
-    
+
     Args:
         id(int): First filter the watch_later field if exist then it remove the already present course
-            and if watch_later field is empty then add the course to watch later section. 
+            and if watch_later field is empty then add the course to watch later section.
     """
+
     def get(self, request, id):
         course = get_object_or_404(Course, id=id)
         if course.watch_later.filter(id=self.request.user.id).exists():
@@ -636,26 +639,28 @@ class WatchLaterCourseAdd(View):
             )
 
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    
-    def post(self, request,id):
-        if request.POST.get('delete'):
+
+    def post(self, request, id):
+        if request.POST.get("delete"):
             selected_course = Course.objects.filter(
-            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+                pk__in=list(map(int, self.request.POST.getlist("selected[]")))
+            )
             for course in selected_course:
                 if course.watch_later.filter(id=self.request.user.id).exists():
                     course.watch_later.remove(self.request.user)
             messages.success(
-                        self.request, "Course successfully removed from Watch Later list"
-                    )
+                self.request, "Course successfully removed from Watch Later list"
+            )
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 class WatchLaterCourseList(ListView):
     """
     This class is used to view all course present in watch_later field.
-    
+
     return:- It return all data of watch_later field.
     """
+
     model = Course
     paginate_by = 4
     template_name = "watch_later_course.html"
@@ -670,10 +675,11 @@ class WatchLaterCourseList(ListView):
 class WatchLaterPlaylistItemAdd(View):
     """
     This class is used to add particular playlist video in watch_later section.
-    
+
     Args:
-        id(int): It is id of particular playlist of a course 
+        id(int): It is id of particular playlist of a course
     """
+
     def get(self, request, id):
         playlist = get_object_or_404(PlaylistItem, id=id)
 
@@ -689,26 +695,28 @@ class WatchLaterPlaylistItemAdd(View):
             )
 
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
-    
-    def post(self, request,id):
-        if request.POST.get('delete'):
+
+    def post(self, request, id):
+        if request.POST.get("delete"):
             selected_playlist = PlaylistItem.objects.filter(
-            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+                pk__in=list(map(int, self.request.POST.getlist("selected[]")))
+            )
             for course in selected_playlist:
                 if course.watch_later_playlist.filter(id=self.request.user.id).exists():
                     course.watch_later_playlist.remove(self.request.user)
             messages.success(
-                        self.request, "playlist successfully removed from Watch Later list"
-                    )
+                self.request, "playlist successfully removed from Watch Later list"
+            )
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 class WatchLaterPlaylistItemList(ListView):
     """
     This class is used to view all playlist in watch_later_playlist section.
-    
+
     return: It return playlist_info contains(title, duration, thumbnail, webpage_url).
     """
+
     model = PlaylistItem
     template_name = "watch_later_playlist.html"
 

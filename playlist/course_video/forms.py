@@ -98,5 +98,3 @@ class ProfilePageForm(forms.ModelForm):
             "website_url": forms.TextInput(attrs={"class": "form-control"}),
             "facebook_url": forms.TextInput(attrs={"class": "form-control"}),
         }
-
-
