@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Course{% endblock title %}
+{% block extra_head %}
+  <link rel=”stylesheet” href=”{% static 'css/style.css' %}”>
+{% endblock extra_head %}
+
 {% load time_left %}
-{% block nav %} 
+
+{% block nav %}
 <div class="ml-auto form-inline">
 {% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
 <a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
@@ -13,7 +19,7 @@
 
     <center class="my-2"><h1>List of Playlist</h1></center>
     <div class="ml-auto my-2">
-  
+
       <a href="download" role="button" class="btn btn-success mr-2">Sample Excel</a>
     </div>
     <table class="table">
@@ -28,36 +34,39 @@
           </tr>
         </thead>
         <tbody>
+
           {% for a in course %}
                     {% if a.public and user.is_authenticated %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
                       <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
-                      
+
                       {% if user.id == a.author.id %}
                         <td>
-                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
+
                           <a href="{% url 'editing' a.id %}">
-                          <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                          <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="Edit title" class="img-small" width="20" height="20">
                           </a>
                           <a href={% url 'watch_later_add' a.id %}>
-                            <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                            <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                           </a>
                           <a href={% url 'favourite_add' a.id %}>
-                            <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
+                            <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                           </a>
                         </td>
-                        
+
                         {% else %}
                         <td>
-                          <a  target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+                          <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
+
                           <a href="{% url 'clone' a.id %}">
-                            <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="" class="img-small" width="20" height="20"></a>
+                            <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="Clone" class="img-small" width="20" height="20"></a>
                             <a href={% url 'watch_later_add' a.id %}>
-                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                             </a>
                             <a href={% url 'favourite_add' a.id %}>
-                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
+                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                             </a>
                         </td>
                         {% endif %}
@@ -70,24 +79,24 @@
                       {% if item == a.id %}
                         {% if user.id == a.author.id %}
                           <td>
-                            
+
                         <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
-                      </div> 
-                      
+                      </div>
+
                     </td>
                     {% else %}
                     <td>
-                      
+
                       <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
-                      </div> 
+                      </div>
                     </td>
                     {% endif %}
                     {% endif %}
                     {% endfor %}
                     {% if user.is_authenticated and profile.time_preference == "H" %}
-                    
+
                       <td>{{ a.time_left | time_conversion:"H" }} hr left</td>
                     {% elif user.is_authenticated and profile.time_preference == "M" %}
                       <td>{{ a.time_left | time_conversion:"M" }} min left</td>
@@ -96,22 +105,23 @@
                     {% endif %}
                     </tr>
                     {% else %}
-                    
+
                     {% if user.id == a.author.id %}
                     <tr>
                     <th scope="row">{{forloop.counter}}</th>
                       <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
                         <td>
-                          
-                          <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
+
+                          <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
+
                           <a href="{% url 'editing' a.id %}">
-                            <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="" class="img-small" width="20" height="20">
+                            <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="Edit title" class="img-small" width="20" height="20">
                             </a>
                             <a href={% url 'watch_later_add' a.id %}>
-                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+                              <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                             </a>
                             <a href={% url 'favourite_add' a.id %}>
-                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="" class="img-small" width="20" height="20">
+                              <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                             </a>
                         </td>
                       <td>
@@ -123,7 +133,7 @@
                     {% if item == a.id %}
                     {% if user.id == a.author.id %}
                     <td>
-                      
+
                       <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: {{values}}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{values}}%</div>
                       </div>
@@ -137,22 +147,22 @@
                     {% endif %}
                     {% endif %}
                     {% endfor %}
-                    
-                    {% else %}
-                    <tr>
-                      
-                    </tr>
-                    {% endif %}
                     {% if user.is_authenticated and profile.time_preference == "H" %}
-                    
+
                       <td>{{ a.time_left | time_conversion:"H" }} hr left</td>
                     {% elif user.is_authenticated and profile.time_preference == "M" %}
                       <td>{{ a.time_left | time_conversion:"M" }} min left</td>
                     {% else %}
                       <td>{{ a.time_left | time_conversion:"S" }} sec left</td>
                     {% endif %}
+                    {% else %}
+                    <tr>
+
+                    </tr>
+                    {% endif %}
+                    
                   </tr>
-                       
+
                     {% endif %}
       {% endfor %}
     </tbody>
@@ -176,4 +186,4 @@
 
 {% endif %}
       {% endblock body %}
-    
+

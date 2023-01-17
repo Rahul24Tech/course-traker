@@ -31,21 +31,9 @@ urlpatterns = [
     ),
     path("create_profile", CreateProfilePage.as_view(), name="create_profile"),
     path("fav/<int:id>/", FavouriteAdd.as_view(), name="favourite_add"),
-    path("profile/favourite", FavouriteList.as_view(), name="profile_favourite"),
+    path('profile/favourite', FavouriteList.as_view(), name='profile_favourite'),
     path("watch/<int:id>/", WatchLaterCourseAdd.as_view(), name="watch_later_add"),
-    path(
-        "profile/watch_later",
-        WatchLaterCourseList.as_view(),
-        name="profile_watch_later",
-    ),
-    path(
-        "watch_playlist/<int:id>/",
-        WatchLaterPlaylistItemAdd.as_view(),
-        name="watch_later_playlist_add",
-    ),
-    path(
-        "profile/watch_later_playlist",
-        WatchLaterPlaylistItemList.as_view(),
-        name="profile_watch_later_playlist",
-    ),
+    path('profile/watch_later', WatchLaterCourseList.as_view(), name='profile_watch_later'),
+    path("watch_playlist/<int:id>/", WatchLaterPlaylistItemAdd.as_view(), name="watch_later_playlist_add"),
+    path('profile/watch_later_playlist', WatchLaterPlaylistItemList.as_view(), name='profile_watch_later_playlist'),
 ]

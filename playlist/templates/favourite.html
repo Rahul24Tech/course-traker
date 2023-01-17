@@ -8,6 +8,7 @@
     <table class="table">
         <thead>
           <tr>
+            <th scope="col">Checkbox</th>
             <th scope="col">S.no</th>
             <th scope="col">Title</th>
             <th scope="col">Action</th>
@@ -15,8 +16,19 @@
           </tr>
         </thead>
         <tbody>
+            <h4>
+                Select All
+                <input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" />
+            </h4>
             {% for course in favourite %}
-            <tr>
+            <form  method="post" action="{% url 'favourite_add' course.id %}">
+                {% csrf_token %}
+                <tr>
+                <td>
+                    <tag id="one" style="margin:8%">
+                        <input type="checkbox" name="selected[]" value="{{course.id}}" />
+                    </tag>
+                </td>
                 <th scope="row">{{forloop.counter}}</th>
                 <td><a  style="color: inherit;" href="{% url 'listing' course.id %}">{{course.title}}</a></td>
                 <td>
@@ -29,9 +41,11 @@
                     <td>{{ course.time_left | time_conversion:"M" }} min left</td>
                 {% else %}
                     <td>{{ course.time_left | time_conversion:"S" }} sec left</td>
-                {% endif %}            
+                {% endif %}
             {% endfor %}
             </tr>
+            <h3><input class="btn btn-danger" type="submit" name="delete" value="Delete" /></h3>
+        </form>
         </tbody>
     </table>
     {% endblock body %}

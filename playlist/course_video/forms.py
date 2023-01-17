@@ -100,14 +100,3 @@ class ProfilePageForm(forms.ModelForm):
         }
 
 
-class TimePreferenceForm(forms.Form):
-    OPTIONS = (
-        ("H", "Hours"),
-        ("M", "Minutes"),
-        ("S", "Seconds"),
-    )
-
-    # 'bio': forms.Textarea(attrs={"class":"form-control"}),
-    # # 'profile_pic': forms.FileInput(attrs = {"id" : "image_field" }),
-    # 'website_url': forms.TextInput(attrs={"class":"form-control"}),
-    # 'facebook_url': forms.TextInput(attrs={"class":"form-control"})
