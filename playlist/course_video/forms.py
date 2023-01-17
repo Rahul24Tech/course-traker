@@ -1,8 +1,12 @@
-from django.forms import ModelForm
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from .models import Contact, Course, Profile
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.forms import ModelForm
+
+from .models import Contact
+from .models import Course
+from .models import Profile
 from .tasks import send_mail_func
 
 

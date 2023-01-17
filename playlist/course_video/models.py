@@ -1,9 +1,10 @@
-from django.db import models
 import uuid
+
 from django.contrib.auth.models import User
-from taggit.managers import TaggableManager
-from django.utils import timezone
+from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+from taggit.managers import TaggableManager
 
 # Create your models here.
 

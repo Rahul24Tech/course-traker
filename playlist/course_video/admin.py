@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import *
-from rangefilter.filters import DateRangeFilter
 from django.utils.html import format_html
+from rangefilter.filters import DateRangeFilter
+
+from .models import *
 
 # Register your models here.
 

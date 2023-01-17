@@ -1,48 +1,44 @@
-from django.shortcuts import (
-    render,
-    redirect,
-    HttpResponse,
-    get_object_or_404,
-    HttpResponseRedirect,
-)
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from taggit.models import Tag
-from django.http import HttpResponse
-from django.views import View, generic
-from django.views.generic.edit import FormView
-from django.views.generic.list import ListView
-from django.core.paginator import EmptyPage
-from django.core.paginator import PageNotAnInteger
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import DetailView
-from django.views.generic.edit import CreateView
-from django import template as tt
-
-
-from .models import *
-from .forms import (
-    CreateUserForm,
-    ContactForm,
-    AddCourseForm,
-    EditProfileForm,
-    ProfilePageForm,
-    # TimePreferenceForm,
-    # CheckboxesForm,
-)
-from django.core.paginator import Paginator
-from django.db.models import Count
-
-import youtube_dl
-import openpyxl
 import calendar
 import time
+from copy import deepcopy
+from datetime import datetime
+
+import openpyxl
+import pytz
+import youtube_dl
+from django import template as tt
+from django.contrib import messages
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
+from django.db.models import Count
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.views import generic
+from django.views import View
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
+from taggit.models import Tag
+
+from .forms import AddCourseForm
+from .forms import ContactForm
+from .forms import CreateUserForm
+from .forms import EditProfileForm
+from .forms import ProfilePageForm
+from .models import *
 
 # import datetime
-import pytz
-from datetime import datetime
-from copy import deepcopy
 
 # Create your views here.
 
