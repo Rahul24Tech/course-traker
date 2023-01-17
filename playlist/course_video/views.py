@@ -28,7 +28,8 @@ from .forms import (
     AddCourseForm,
     EditProfileForm,
     ProfilePageForm,
-    TimePreferenceForm,
+    # TimePreferenceForm,
+    # CheckboxesForm,
 )
 from django.core.paginator import Paginator
 from django.db.models import Count
@@ -568,6 +569,7 @@ class FavouriteAdd(View):
     return: First filter the favourite field if exist then it remove the already present course
             and if favourite field is empty then add the course. 
     """
+    
     def get(self, request, id):
         course = get_object_or_404(Course, id=id)
         if course.favourites.filter(id=self.request.user.id).exists():
@@ -582,6 +584,18 @@ class FavouriteAdd(View):
             )
 
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    
+    def post(self, request,id):
+        if request.POST.get('delete'):
+            selected_course = Course.objects.filter(
+            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+            for course in selected_course:
+                if course.favourites.filter(id=self.request.user.id).exists():
+                    course.favourites.remove(self.request.user)
+            messages.success(
+                        self.request, "Course successfully removed from Favourite list"
+                    )
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 class FavouriteList(ListView):
@@ -591,9 +605,8 @@ class FavouriteList(ListView):
     return: It return all data which is in favourite field.
     """
     model = Course
-    paginate_by = 4
     template_name = "favourite.html"
-
+    
     def get_context_data(self, **kwargs):
         context = super(FavouriteList, self).get_context_data(**kwargs)
         favourite = Course.objects.filter(favourites=self.request.user)
@@ -622,6 +635,18 @@ class WatchLaterCourseAdd(View):
                 self.request, "Course successfully added to Watch Later list"
             )
 
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    
+    def post(self, request,id):
+        if request.POST.get('delete'):
+            selected_course = Course.objects.filter(
+            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+            for course in selected_course:
+                if course.watch_later.filter(id=self.request.user.id).exists():
+                    course.watch_later.remove(self.request.user)
+            messages.success(
+                        self.request, "Course successfully removed from Watch Later list"
+                    )
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
@@ -663,6 +688,18 @@ class WatchLaterPlaylistItemAdd(View):
                 self.request, "playlist successfully added to Watch Later list"
             )
 
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
+    
+    def post(self, request,id):
+        if request.POST.get('delete'):
+            selected_playlist = PlaylistItem.objects.filter(
+            pk__in=list(map(int, self.request.POST.getlist('selected[]'))))
+            for course in selected_playlist:
+                if course.watch_later_playlist.filter(id=self.request.user.id).exists():
+                    course.watch_later_playlist.remove(self.request.user)
+            messages.success(
+                        self.request, "playlist successfully removed from Watch Later list"
+                    )
         return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
