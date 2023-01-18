@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'course/base.html' %}
 {% block title %}Wacth Later Playlist{% endblock title %}
 {% load time_left %}
 {% block body %}
@@ -10,7 +10,7 @@
       <input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" />
   </h4>
     {% for data in playlist_info %}
-    <form  method="post" action="{% url 'watch_later_playlist_add' data.id %}">
+    <form  method="post" action="{% url 'members:watch_later_playlist_add' data.id %}">
       {% csrf_token %}
       <div class="d-flex overflow-auto">
         <div class="card" style="width: 18rem;">
@@ -23,7 +23,7 @@
               <a target="_blank" href={{data.webpage_url}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
             </div>
             <small class="text-muted">{{data.duration}}</small>
-            <a href={% url 'watch_later_playlist_add' data.id %}><img src="   https://cdn-icons-png.flaticon.com/512/3096/3096687.png " alt="" title="Delete" class="img-small" width="20" height="20"></a>
+            <a href={% url 'members:watch_later_playlist_add' data.id %}><img src="   https://cdn-icons-png.flaticon.com/512/3096/3096687.png " alt="" title="Delete" class="img-small" width="20" height="20"></a>
             <tag id="one" style="margin:8%">
               <input type="checkbox" name="selected[]" value="{{data.id}}" />
             </tag>

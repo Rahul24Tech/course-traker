@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}Watch Later Course{% endblock title %}
+{% extends 'course/base.html' %}
+{% block title %}Favourite{% endblock title %}
 {% load time_left %}
 {% block body %}
 
-    <center class="my-2"><h1>Users saved watch later course</h1></center>
-    <center><p class="lead text-muted">Here you can remove or view the watch later course you have added.</p></center>
+    <center class="my-2"><h1>Users saved favourites course</h1></center>
+    <center><p class="lead text-muted">Here you can remove or view the favourite course you have added.</p></center>
     <table class="table">
         <thead>
           <tr>
-            <th scope="col"></th>
+            <th scope="col">Checkbox</th>
             <th scope="col">S.no</th>
             <th scope="col">Title</th>
             <th scope="col">Action</th>
@@ -20,21 +20,20 @@
                 Select All
                 <input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" />
             </h4>
-            {% for course in watch_later %}
-            <form  method="post" action="{% url 'watch_later_add' course.id %}">
+            {% for course in favourite %}
+            <form  method="post" action="{% url 'members:favourite_add' course.id %}">
                 {% csrf_token %}
-
-            <tr>
+                <tr>
                 <td>
                     <tag id="one" style="margin:8%">
                         <input type="checkbox" name="selected[]" value="{{course.id}}" />
                     </tag>
                 </td>
                 <th scope="row">{{forloop.counter}}</th>
-                <td><a  style="color: inherit;" href="{% url 'listing' course.id %}">{{course.title}}</a></td>
+                <td><a  style="color: inherit;" href="{% url 'course_video:listing' course.id %}">{{course.title}}</a></td>
                 <td>
-                    <a target="_blank" href={{course.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Export free icon" width="20" height="20"></a>
-                    <a href={% url 'watch_later_add' course.id %}><img src="   https://cdn-icons-png.flaticon.com/512/3096/3096687.png " alt="" title="" class="img-small" width="20" height="20"></a>
+                    <a target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to link" width="20" height="20"></a>
+                    <a href={% url 'members:favourite_add' course.id %}><img src="   https://cdn-icons-png.flaticon.com/512/3096/3096687.png " alt="" title="Delete" class="img-small" width="20" height="20"></a>
                 </td>
                 {% if user.is_authenticated and profile.time_preference == "H" %}
                     <td>{{ course.time_left | time_conversion:"H" }} hr left</td>

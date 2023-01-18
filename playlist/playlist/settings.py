@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "course_video",
+    "members",
     "taggit",
     "allauth",
     "allauth.account",

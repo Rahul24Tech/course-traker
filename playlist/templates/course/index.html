@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'course/base.html' %}
 {% load static %}
 {% block title %}Course{% endblock title %}
 {% block extra_head %}
@@ -10,8 +10,8 @@
 {% block nav %}
 <div class="ml-auto form-inline">
 {% comment %} <a href="download"  class="nav mr-2">Sample Excel</a> {% endcomment %}
-<a href="upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
-  <a href="course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
+<a href="course_video:upload" role="button" class="btn btn-success mr-2">Upload Excel</a>
+  <a href="course_video:course_csv" role="button" class="btn btn-success mr-2">Download Excel</a>
 </div>
 {% endblock nav %}
 
@@ -39,19 +39,19 @@
                     {% if a.public and user.is_authenticated %}
                     <tr>
                       <th scope="row">{{forloop.counter}}</th>
-                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
+                      <td><a  style="color: inherit;" href="{% url 'course_video:listing' a.id %}">{{a.title}}</a></td>
 
                       {% if user.id == a.author.id %}
                         <td>
                           <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
 
-                          <a href="{% url 'editing' a.id %}">
+                          <a href="{% url 'course_video:editing' a.id %}">
                           <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="Edit title" class="img-small" width="20" height="20">
                           </a>
-                          <a href={% url 'watch_later_add' a.id %}>
+                          <a href={% url 'members:watch_later_add' a.id %}>
                             <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                           </a>
-                          <a href={% url 'favourite_add' a.id %}>
+                          <a href={% url 'members:favourite_add' a.id %}>
                             <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                           </a>
                         </td>
@@ -60,19 +60,19 @@
                         <td>
                           <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
 
-                          <a href="{% url 'clone' a.id %}">
+                          <a href="{% url 'course_video:clone' a.id %}">
                             <img src="https://cdn-icons-png.flaticon.com/512/4662/4662661.png " alt="" title="Clone" class="img-small" width="20" height="20"></a>
-                            <a href={% url 'watch_later_add' a.id %}>
+                            <a href={% url 'members:watch_later_add' a.id %}>
                               <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                             </a>
-                            <a href={% url 'favourite_add' a.id %}>
+                            <a href={% url 'members:favourite_add' a.id %}>
                               <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                             </a>
                         </td>
                         {% endif %}
                         <td>
                         {% for tag in a.tags.all %}
-                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
+                        <a href="{% url 'course_video:tag_listing' tag.slug %}">{{tag.name}}</a>
                       {% endfor %}
                     </td>
                     {% for item, values in per.items %}
@@ -109,24 +109,24 @@
                     {% if user.id == a.author.id %}
                     <tr>
                     <th scope="row">{{forloop.counter}}</th>
-                      <td><a  style="color: inherit;" href="{% url 'listing' a.id %}">{{a.title}}</a></td>
+                      <td><a  style="color: inherit;" href="{% url 'course_video:listing' a.id %}">{{a.title}}</a></td>
                         <td>
 
                           <a id="gotoicon" target="_blank" href={{a.link}}><img class="mx-2" src="https://cdn-icons-png.flaticon.com/512/709/709576.png" alt="Export free icon" title="Go to Link" width="20" height="20"></a>
 
-                          <a href="{% url 'editing' a.id %}">
+                          <a href="{% url 'course_video:editing' a.id %}">
                             <img src="   https://cdn-icons-png.flaticon.com/512/1159/1159633.png " alt="" title="Edit title" class="img-small" width="20" height="20">
                             </a>
-                            <a href={% url 'watch_later_add' a.id %}>
+                            <a href={% url 'members:watch_later_add' a.id %}>
                               <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="Watch Later" class="img-small" width="20" height="20">
                             </a>
-                            <a href={% url 'favourite_add' a.id %}>
+                            <a href={% url 'members:favourite_add' a.id %}>
                               <img src="   https://cdn-icons-png.flaticon.com/512/8596/8596084.png " alt="" title="Add to favourite" class="img-small" width="20" height="20">
                             </a>
                         </td>
                       <td>
                       {% for tag in a.tags.all %}
-                        <a href="{% url 'tag_listing' tag.slug %}">{{tag.name}}</a>
+                        <a href="{% url 'course_video:tag_listing' tag.slug %}">{{tag.name}}</a>
                           {% endfor %}
                         </td>
                     {% for item, values in per.items %}

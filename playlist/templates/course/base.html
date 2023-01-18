@@ -28,27 +28,27 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item {% block contactactive %}  {% endblock contactactive %} ">
-              <a class="nav-link" href="/contact">Contact</a>
+              <a class="nav-link" href="{% url 'members:contact' %}">Contact</a>
             </li>
             <li class="nav-item {% block blogactive %}  {% endblock blogactive %} ">
-              <a class="nav-link" href="/course">Course</a>
+              <a class="nav-link" href="{% url 'course_video:course' %}">Course</a>
             </li>
             {% if user.profile.id %}
             <li class="nav-item {% block profileactive %}  {% endblock profileactive %} ">
-              <a class="nav-link" href="{% url 'show_profile' user.profile.id %}">Profile</a>
+              <a class="nav-link" href="{% url 'members:show_profile' user.profile.id %}">Profile</a>
             </li>
             {% else %}
 
-              <a class="nav-link" href="{% url 'create_profile' %}">Create Profile</a>
+              <a class="nav-link" href="{% url 'members:create_profile' %}">Create Profile</a>
             </li>
             {% endif %}
 
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="/contact">Contact</a>
+              <a class="nav-link" href="{% url 'members:contact' %}">Contact</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/course">Course</a>
+              <a class="nav-link" href="{% url 'course:video:course' %}">Course</a>
             </li>
 
             {% endif %}
@@ -76,19 +76,19 @@
   </a>
   <div class="dropdown-menu aria-labelledby="navbarDropdown">
     {% comment %} <a class="dropdown-item" href="edit_profile">Edit Profile</a> {% endcomment %}
-    <a class="dropdown-item" href="{% url 'profile_favourite' %}">Saved Course</a>
-    <a class="dropdown-item" href="{% url 'profile_watch_later' %}">Watch Later</a>
-    <a class="dropdown-item" href="{% url 'profile_watch_later_playlist' %}">Watch Later Playlist</a>
-    <a class="dropdown-item" href="logout">Logout</a>
+    <a class="dropdown-item" href="{% url 'members:profile_favourite' %}">Saved Course</a>
+    <a class="dropdown-item" href="{% url 'members:profile_watch_later' %}">Watch Later</a>
+    <a class="dropdown-item" href="{% url 'members:profile_watch_later_playlist' %}">Watch Later Playlist</a>
+    <a class="dropdown-item" href="members/logout">Logout</a>
 
   </div>
 </li>
 </ul>
 
 {% else %}
-<a href="login" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Login </a>
+<a href="{% url 'members:login' %}" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Login </a>
 
-<a href="signup" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Signup </a>
+<a href="{% url 'members:signup' %}" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Signup </a>
 {% endif %}
 
 </div>
