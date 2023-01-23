@@ -1,0 +1,26 @@
+COURSE_TABLE_TITLE = ["Title", "Link", "Tag", "Progress"]
+COURSE_TUPLE = ("Title", "Link", "Tag", "Progress")
+EMAIL_SUCCESS_MESSAGE = "Sent Email Successfully...Check your mail please"
+TITLE_SUCCESS_MESSAGE = "Successfully updated title"
+INITIAL_STATUS_VALUE = "Yet To Start"
+EXCEL_FIRST_SHEET_NAME = "ListOfPlaylist"
+UPLOAD_EXCEL_FILE_MESSAGE = "course is already present in List of playlist"
+UPLOAD_EXCEL_FILE_FAILURE_MESSAGE = "Format of excel sheet not meet as expected please Go through the sample excel file for correct format"
+CONTENT_FILE_TYPE = "application/vnd.ms-excel; charset=utf-16"
+USER_ACCOUNT_CREATION_MESSAGE = "Techhub account was created for"
+INCORRECT_LOGIN_MESSAGE = "Username OR Password is incorrect"
+SUCCESS_LOGOUT_MESSAGE = "Successfully logged out"
+CONTACT_FAILURE_MESSAGE = "Please fill the form correctly"
+CONTACT_SUCCESS_MESSAGE = "Your message has been successfully sent"
+EDIT_PROFILE_FIELDS = ["bio", "profile_pic", "website_url", "facebook_url", "time_preference"]
+FAVOURITE_COURSE_FAILURE_MESSAGE = "Course successfully removed from Favourite list"
+COURSE_ADDED_TO_FAVOURITE_MESSAGE = "Course successfully added to Favourite list"
+WATCH_LATER_COURSE_FAILURE_MESSAGE = "Course successfully removed from Watch Later list"
+COURSE_ADDED_TO_WATCH_LATER_MESSAGE = "Course successfully added to Watch Later list"
+WATCH_LATER_PLAYLIST_FAILURE_MESSAGE = "playlist successfully removed from Watch Later list"
+PLAYLIST_ADDED_TO_WATCH_LATER_MESSAGE = "playlist successfully added to Watch Later list"
+MAIL_SUBJECT = "Hye from celery"
+MAIL_BODY = "Yaaaa....I have Added course by celery!!"
+EMAIL = "test@yopmail.com"
+CELERY_SUCCESS_MESSAGE = "Done"
+
