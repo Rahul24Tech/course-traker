@@ -34,12 +34,19 @@ Installation:
 Run Test:
  
  1.python3 manage.py runserver:- this will run at port:8000
- 
+
+
+Configuration of test cases:
+
+  1. python3 manage.py test
+
+For generating coverage report follow commands are:
+
+  1. coverage run --source='members' manage.py test && coverage report && coverage html
+
+
 Features:
-  1. Added Favourite action to save particular course. 
-  2. Added watch_later action to watch video later(some other days) of particular course.
-  3. Added watch_later for particular playlist of a course i.e:- watch_later_playlist
-  4. Added delete action for all favourite, watch_late, watch_later_playlist).
+  1. Added Test Cases for members app
 
 
  
