@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'course/base.html' %}
 {% block body %}
     <form action="" method="post">
         {% csrf_token %}
@@ -10,4 +10,3 @@
             <button type="submit" class="btn btn-dark">Update</button>
         </form>
 {% endblock body %}
-

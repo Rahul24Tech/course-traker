@@ -1,64 +1,46 @@
-from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from taggit.models import Tag
-from django.http import HttpResponse
-from django.views import View, generic
-from django.views.generic.edit import FormView
-from django.views.generic.list import ListView
-from django.core.paginator import EmptyPage
-from django.core.paginator import PageNotAnInteger
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import DetailView
-from django.views.generic.edit import CreateView
-from django import template as tt
-
-
-from .models import *
-from .forms import (
-    CreateUserForm,
-    ContactForm,
-    AddCourseForm,
-    EditProfileForm,
-    ProfilePageForm,
-    TimePreferenceForm,
-)
-from django.core.paginator import Paginator
-from django.db.models import Count
-
-import youtube_dl
-import openpyxl
 import calendar
 import time
-
-# import datetime
-import pytz
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
 
-# Create your views here.
+import openpyxl
+import youtube_dl
+from course_video.forms import AddCourseForm
+from course_video.models import *
+from django.contrib import messages
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
+from django.http import HttpResponse
+from django.shortcuts import HttpResponse
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.views import View
+from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
+from members.models import Profile
+from taggit.models import Tag
 
 
 class Home(View):
     """
-    This class is used to display home page of an app.
+    Home class is used to display home page of an app.
     """
 
     def get(self, request):
-        return render(request, "home.html")
+        return render(request, "course/home.html")
 
 
 class Main(ListView):
     """
-    This class is used to display the course,
+    Main class is used to display the course,
     and progress bar status too, and after successfully adition of course email
     notification is sent.
     """
 
     model = Course
     paginate_by = 4
-    template_name = "index.html"
+    template_name = "course/index.html"
 
     def get_context_data(self, **kwargs):
         context = super(Main, self).get_context_data(**kwargs)
@@ -102,10 +84,10 @@ class Main(ListView):
 
 class AddCourse(FormView):
     """
-    This class is used to add course to list_of_playlist
+    AddCourse class is used to add course to list_of_playlist
     """
 
-    template_name = "add_course.html"
+    template_name = "course/add_course.html"
     form_class = AddCourseForm
     success_url = "course"
 
@@ -153,7 +135,7 @@ class AddCourse(FormView):
 
 class TagListing(View):
     """
-    This class is used to filter out course based on given tags
+    TagListing class is used to filter out course based on given tags
 
     Args:-
         tags = slug of tag name
@@ -168,12 +150,12 @@ class TagListing(View):
         info = {
             "tags": posts,
         }
-        return render(request, "tag.html", info)
+        return render(request, "course/tag.html", info)
 
 
 class Listing(View):
     """
-    This class is used to open particular video playlist and maintain the progress
+    Listing class is used to open particular video playlist and maintain the progress
     bar status.
 
     Args-
@@ -196,117 +178,43 @@ class Listing(View):
             "title": course_list.title,
         }
 
-        return render(request, "List.html", course_info)
-
-
-class HandleSignUp(View):
-    """
-    This class is used to handle SignUp of new user.
-    """
-
-    form = CreateUserForm()
-
-    def post(self, request):
-
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get("username")
-            messages.success(request, "Techhub account was created for" + user)
-            return redirect("login")
-
-    def get(self, request):
-        return render(request, "signup.html", {"form": self.form})
-
-
-class HandeLogin(View):
-    """
-    This class is used to handle login or allauth social login also.
-    """
-
-    def post(self, request):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("/")
-        else:
-            messages.info(request, "Username OR Password is incorrect")
-
-    def get(self, request):
-        return render(request, "account/login.html")
-
-
-class HandelLogout(View):
-    """
-    This class is used to handle logout and redirect to homepage of an app.
-    """
-
-    def get(self, request):
-        logout(request)
-        messages.success(request, "Successfully logged out")
-        return redirect("/")
-
-
-class Contact(View):
-    """
-    This class is used to take any query from an app.
-    """
-
-    def post(self, request):
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data["name"]
-            email = form.cleaned_data["email"]
-            phone = form.cleaned_data["phone"]
-            content = form.cleaned_data["content"]
-            if len(name) < 2 or len(email) < 3 or len(phone) < 10 or len(content) < 4:
-                messages.error(request, "Please fill the form correctly")
-            else:
-                contact = Contact(name=name, email=email, phone=phone, content=content)
-                contact.save()
-                messages.success(request, "Your message has been successfully sent")
-
-    def get(self, request):
-        return render(request, "contact.html")
+        return render(request, "course/List.html", course_info)
 
 
 class Search(View):
     """
-    This class is used to filter out course which is written on search box.
+    Search class is used to filter out course which is written on search box.
     """
 
     def get(self, request):
-        query = request.GET["query"]
+        query = self.request.GET["query"]
         allCourse = Course.objects.filter(title__icontains=query)
         params = {"allCourse": allCourse}
-        return render(request, "search.html", params)
+        return render(request, "course/search.html", params)
 
 
 class Editing(View):
     """
-    This class is used to edit the title of course.
+    Editing class is used to edit the title of course.
     """
 
     def post(self, request, id):
         course = Course.objects.get(id=id)
-        string_var = course.title
         title = request.POST["title"]
         course.title = title
         course.save(update_fields=["title"])
         PlaylistItem.objects.filter(playlist=course.id).update(playlist=course.id)
         messages.success(request, "Successfully updated title")
-        return redirect("/course")
+        return redirect("course_video:course")
 
     def get(self, request, id):
         course = Course.objects.get(id=id)
-        return render(request, "edit.html", {"course": course, "id": id})
+        return render(request, "course/edit.html", {"course": course, "id": id})
 
 
 class GetStatus(View):
     """
-    This class is used to store current status value
+    GetStatus class is used to store current status value
     ("Yet to Start", "In Progress", "On Hold", "Completed")
     to DB.
     """
@@ -319,17 +227,15 @@ class GetStatus(View):
         update_status.status = choice
         update_status.save(update_fields=["status", "author"])
 
-        return redirect("listing", id=list_id)
+        return redirect("course_video:listing", id=list_id)
 
 
 class Clone(View):
     """
-    This class is used to make clone of public course of other user.
+    Clone class is used to make clone of public course of other user.
     """
 
     def get(self, request, id):
-        # import pdb
-        # pdb.set_trace()
         course = Course.objects.get(id=id)
         if self.request.user.id != course.author.id and course.public:
             old_obj = deepcopy(course)
@@ -357,7 +263,7 @@ class Clone(View):
 
 class CourseCsv(View):
     """
-    This class is used to download private course in excel format.
+    CourseCsv class is used to download private course in excel format.
     """
 
     def get(self, request):
@@ -398,7 +304,7 @@ class CourseCsv(View):
 
 class Upload(View):
     """
-    This class is used to added course by just providing excel sheets in proper format.
+    Upload class is used to added course by just providing excel sheets in proper format.
     """
 
     def post(self, request):
@@ -444,7 +350,9 @@ class Upload(View):
                     ydl = youtube_dl.YoutubeDL({"ignoreerrors": True, "quiet": True})
                     with ydl:
                         result = ydl.extract_info(
-                            item[1], download=False  # We just want to extract the info
+                            # We just want to extract the info
+                            item[1],
+                            download=False,
                         )
 
                     playlist_info = []
@@ -475,12 +383,12 @@ class Upload(View):
             return redirect(Main)
 
     def get(self, request):
-        return render(request, "upload.html")
+        return render(request, "course/upload.html")
 
 
 class Download(View):
     """
-    This class is to download sample.xlsx file for correct excel file format.
+    Download class is to download sample.xlsx file for correct excel file format.
     """
 
     def get(self, request):
@@ -490,59 +398,3 @@ class Download(View):
             response["Content-Disposition"] = "attachment; filename=" + filename
             response["Content-Type"] = "application/vnd.ms-excel; charset=utf-16"
             return response
-
-
-class UserEditView(generic.UpdateView):
-    """This class is used to edit users setting"""
-
-    form_class = EditProfileForm
-    template_name = "edit_profile.html"
-    success_url = "/"
-
-    def get_object(self):
-        return self.request.user
-
-
-class ShowProfilePageView(DetailView):
-    """
-    This class is used to view profile page.
-
-    return - context of profile data and course_author data
-    """
-
-    model = Profile
-    template_name = "user_profile.html"
-
-    def get_context_data(self, *args, **kwargs):
-
-        context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
-        pages_user = get_object_or_404(Profile, id=self.kwargs["pk"])
-        course_title = Course.objects.filter(author=pages_user.user)
-        context["page_user"] = pages_user
-        context["course_title"] = course_title
-        return context
-
-
-class EditProfilePageView(generic.UpdateView):
-    """
-    This class is used to edit profile page
-    """
-
-    model = Profile
-    fields = ["bio", "profile_pic", "website_url", "facebook_url", "time_preference"]
-    template_name = "edit_profile_page.html"
-    success_url = "/"
-
-
-class CreateProfilePage(CreateView):
-    """
-    This class is used to profile page of user.
-    """
-
-    model = Profile
-    form_class = ProfilePageForm
-    template_name = "create_user_profile.html"
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)

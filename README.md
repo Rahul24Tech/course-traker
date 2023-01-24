@@ -34,12 +34,19 @@ Installation:
 Run Test:
  
  1.python3 manage.py runserver:- this will run at port:8000
- 
+
+
+Configuration of test cases:
+
+  1. python3 manage.py test
+
+For generating coverage report follow commands are:
+
+  1. coverage run --source='members' manage.py test && coverage report && coverage html
+
+
 Features:
-  1. Added Profile page 
-  2. Added edit settings of logged in user.
-  3. User can update thier profile (EditProfilePageView)
-  4. Added a new field Time Left field in course table and time_preference field in Profile model.
+  1. Added Test Cases for members app
 
 
  
