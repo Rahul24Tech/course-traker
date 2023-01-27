@@ -1,9 +1,7 @@
-from django.db import models
-import uuid
 from django.contrib.auth.models import User
-from taggit.managers import TaggableManager
+from django.db import models
 from django.utils import timezone
-from django.urls import reverse
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -16,6 +14,12 @@ class Course(models.Model):
     public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    favourites = models.ManyToManyField(
+        User, related_name="favourite", blank=True, default=None
+    )
+    watch_later = models.ManyToManyField(
+        User, related_name="watch_later", blank=True, default=None
+    )
 
     def __str__(self):
         return self.title
@@ -35,18 +39,6 @@ class Course(models.Model):
         return time
 
 
-class Contact(models.Model):
-    sno = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=13)
-    email = models.CharField(max_length=100)
-    content = models.TextField()
-    timeStamp = models.DateTimeField(auto_now_add=True, blank=True)
-
-    def __str__(self):
-        return "Message from " + self.name + " - " + self.email
-
-
 class PlaylistItem(models.Model):
     list_item = models.CharField(max_length=150)
     time = models.IntegerField(null=True, blank=True)
@@ -54,24 +46,9 @@ class PlaylistItem(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null="true")
     status = models.CharField(max_length=50, default="Yet To Start")
     playlist = models.ForeignKey(Course, on_delete=models.CASCADE)
+    watch_later_playlist = models.ManyToManyField(
+        User, related_name="watch_later_playlist", blank=True, default=None
+    )
 
     def __str__(self):
         return self.list_item
-
-
-class Profile(models.Model):
-    OPTIONS = (
-        ("H", "Hours"),
-        ("M", "Minutes"),
-        ("S", "Seconds"),
-    )
-
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    bio = models.TextField()
-    profile_pic = models.ImageField(null=True, blank=True, upload_to="images/Profile/")
-    website_url = models.CharField(max_length=255, null=True, blank=True)
-    facebook_url = models.CharField(max_length=255, null=True, blank=True)
-    time_preference = models.CharField(max_length=100, choices=OPTIONS)
-
-    def get_absolute_url(self):
-        return reverse("home")

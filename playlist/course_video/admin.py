@@ -1,7 +1,7 @@
+from course_video.models import *
 from django.contrib import admin
-from .models import *
-from rangefilter.filters import DateRangeFilter
 from django.utils.html import format_html
+from rangefilter.filters import DateRangeFilter
 
 # Register your models here.
 
@@ -64,21 +64,6 @@ class CourseAdmin(admin.ModelAdmin):
     set_course_to_private.short_description = "Mark selected course as private"
 
 
-@admin.register(Contact)
-class ContactAdmin(admin.ModelAdmin):
-    list_display = ("name", "phone", "email", "content")
-    search_fields = ("name", "email")
-    list_per_page = 40
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": ("name", "phone", "email", "content"),
-            },
-        ),
-    )
-
-
 @admin.register(PlaylistItem)
 class PlaylistItemAdmin(admin.ModelAdmin):
     list_display = ("list_item", "time", "link", "author", "status")
@@ -101,8 +86,3 @@ class PlaylistItemAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("bio",)

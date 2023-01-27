@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'course/base.html' %}
 {% load time_left %}
 {% block title %}Create Profile Page{% endblock title %}
 
@@ -8,7 +8,7 @@
         <br></br>
 
         <div class="form-group">
-            
+
             <form enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {{form.as_p}}

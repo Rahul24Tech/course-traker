@@ -1,0 +1,6 @@
+#onhovergoto{
+    visibility: hidden;
+}
+#gotoicon:hover ~ #onhovergoto{
+    visibility: visible;
+}

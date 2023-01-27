@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <title>{% block title %}   {% endblock title %}</title>
+    {% block extra_head %}{% endblock extra_head %}
   </head>
-  
+
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -19,7 +20,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-      
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item {% block homeactive %}  {% endblock homeactive %}">
@@ -27,69 +28,73 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item {% block contactactive %}  {% endblock contactactive %} ">
-              <a class="nav-link" href="/contact">Contact</a>
+              <a class="nav-link" href="{% url 'members:contact' %}">Contact</a>
             </li>
             <li class="nav-item {% block blogactive %}  {% endblock blogactive %} ">
-              <a class="nav-link" href="/course">Course</a>
+              <a class="nav-link" href="{% url 'course_video:course' %}">Course</a>
             </li>
             {% if user.profile.id %}
             <li class="nav-item {% block profileactive %}  {% endblock profileactive %} ">
-              <a class="nav-link" href="{% url 'show_profile' user.profile.id %}">Profile</a>
+              <a class="nav-link" href="{% url 'members:show_profile' user.profile.id %}">Profile</a>
             </li>
             {% else %}
-            
-              <a class="nav-link" href="{% url 'create_profile' %}">Create Profile</a>
+
+              <a class="nav-link" href="{% url 'members:create_profile' %}">Create Profile</a>
             </li>
             {% endif %}
-      
+
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="/contact">Contact</a>
+              <a class="nav-link" href="{% url 'members:contact' %}">Contact</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/course">Course</a>
+              <a class="nav-link" href="{% url 'course:video:course' %}">Course</a>
             </li>
-            
+
             {% endif %}
-            
+
           </ul>
           <div class="ml-auto form-inline">
           <form method="get" action="/search" class=" my-2 my-lg-0 mx-3">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" id="query">
             <button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
-            
+
           </form>
-  
+
 <!-- Button to  trigger Login modal -->
 {% if user.is_authenticated %}
 
 <ul class="navbar-nav ml-auto">
-  
+
   <a href="/add" role="button" class="btn btn-success mr-2">
     Add Course
   </a>
-  
+
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
    Welcome {{request.user}}
   </a>
   <div class="dropdown-menu aria-labelledby="navbarDropdown">
     {% comment %} <a class="dropdown-item" href="edit_profile">Edit Profile</a> {% endcomment %}
-    <a class="dropdown-item" href="logout">Logout</a>
+    <a class="dropdown-item" href="{% url 'members:profile_favourite' %}">Saved Course</a>
+    <a class="dropdown-item" href="{% url 'members:profile_watch_later' %}">Watch Later</a>
+    <a class="dropdown-item" href="{% url 'members:profile_watch_later_playlist' %}">Watch Later Playlist</a>
+    <a class="dropdown-item" href="members/logout">Logout</a>
+
   </div>
 </li>
 </ul>
 
 {% else %}
-<a href="login" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Login </a>
+<a href="{% url 'members:login' %}" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Login </a>
 
-<a href="signup" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Signup </a>
+<a href="{% url 'members:signup' %}" role="button" target="_blank" class="btn btn-outline-success m-2 my-sm-0"> Signup </a>
 {% endif %}
 
 </div>
         </div>
       </nav>
-      {% for message in messages  %}            
+      {% for message in messages  %}
     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             <strong>Message : </strong> {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

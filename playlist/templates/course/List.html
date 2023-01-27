@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'course/base.html' %}
 {% block body %}
     <button onclick="history.back()"><img src="https://cdn-icons-png.flaticon.com/512/3114/3114883.png " alt="" title="" class="img-small" width="30" height="30"></button>
     <center class="mx-2"><h1>{{title}}</h1></center>
@@ -7,24 +7,31 @@
         <tr>
           <th scope="col">S.no</th>
           <th scope="col">List</th>
+          <th scope="col">Action</th>
           <th scope="col">Time</th>
           <th scope="col">Current Status</th>
         </tr>
       </thead>
-      <tbody> 
+      <tbody>
         {% for dict in videoDetail %}
         <tr>
           <th scope="row">{{forloop.counter}}</th>
           <td><a target="_blank" style="color: inherit;" href={{dict.link}}>{{ dict.list_item }}</a></td>
+          <td>
+          <a href={% url 'members:watch_later_playlist_add' dict.id %}>
+            <img src="   https://cdn-icons-png.flaticon.com/512/833/833602.png " alt="" title="" class="img-small" width="20" height="20">
+          </a>
+        </td>
           <td>{{dict.time}}</td>
-         
 
-          
+
+
           <td>
             <div class="card">
               <div class="card-body">
-                <form action="{% url 'getstatus' dict.id %}" method="post">
+                <form action="{% url 'course_video:getstatus' dict.id %}" method="post">
                   {% csrf_token %}
+                  {% comment %} <label for="choice">Choice</label> {% endcomment %}
                   <select name="choice" class="form-control">
                     {% if dict.status == "Yet to Start" %}
                     <option value="Yet to Start" selected>Yet to Start</option>
@@ -50,8 +57,8 @@
                     <button type="submit" class="btn btn-dark my-2">Save</button>
                   </form>
                   </div>
-                  </div>  
-                </td> 
+                  </div>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
